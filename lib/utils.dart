@@ -254,13 +254,13 @@ class Utils {
   static State applyReview(State prev, Review review) {
     CardId cardId = CardId.fromReview(review);
 
-    CardState cardState = prev.cardStates[cardId.id];
+    CardState cardState = prev.cardStates[cardId.uniqueId];
     if (cardState == null) {
       throw ("applying review to missing card: ${review.master}");
     }
-    State newState = State(Map<int, CardState>.from(prev.cardStates));
+    State newState = State(Map<String, CardState>.from(prev.cardStates));
 
-    newState.cardStates[cardId.id] =
+    newState.cardStates[cardId.uniqueId] =
         applyToCardState(cardState, review.ts, review.rating);
 
     return newState;

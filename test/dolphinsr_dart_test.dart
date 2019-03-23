@@ -95,7 +95,7 @@ void main() {
     Combination combination = Combination([], []);
 
     CardId cardId = CardId.fromIdAndCombi(id, combination);
-    state.cardStates[cardId.id] =
+    state.cardStates[cardId.uniqueId] =
         CardState.makeInitialCardState(id: id, combination: combination);
 
     Review reviewLater = Review(id, combination, Dates.laterToday, Rating.Easy);

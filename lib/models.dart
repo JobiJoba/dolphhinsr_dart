@@ -4,23 +4,29 @@ class CardId {
   String backJoin;
   DateTime time;
 
+  String uniqueId;
+
   CardId(CardState state) {
     id = state.master;
     frontJoin = state.combination.front.join(',');
     backJoin = state.combination.front.join(',');
     time = state.lastReviewed;
+
+    uniqueId = "$id#$frontJoin@$backJoin";
   }
 
   CardId.fromIdAndCombi(int master, Combination combination) {
     id = master;
     frontJoin = combination.front.join(',');
     backJoin = combination.front.join(',');
+    uniqueId = "$id#$frontJoin@$backJoin";
   }
   CardId.fromReview(Review review) {
     id = review.master;
     frontJoin = review.combination.front.join(',');
     backJoin = review.combination.front.join(',');
     time = review.ts;
+    uniqueId = "$id#$frontJoin@$backJoin";
   }
 }
 
@@ -134,7 +140,7 @@ class LapsedCardState extends CardState {
 }
 
 class State {
-  Map<int, CardState> cardStates;
+  Map<String, CardState> cardStates;
   static makeEmptyState() {
     return State(new Map());
   }

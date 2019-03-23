@@ -35,10 +35,10 @@ class DolphinSR {
   foreachMaster(Combination combination, Master master) {
     CardId cardId = CardId.fromIdAndCombi(master.id, combination);
 
-    _state.cardStates[cardId.id] =
+    _state.cardStates[cardId.uniqueId] =
         CardState.makeInitialCardState(id: master.id, combination: combination);
 
-    print("${cardId.id}-${_state.cardStates[cardId.id].mode}");
+    print("${cardId.id}-${_state.cardStates[cardId.uniqueId].mode}");
   }
 
   addMasters(List<Master> masters) {
