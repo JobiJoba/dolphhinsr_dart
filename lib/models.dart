@@ -174,9 +174,9 @@ class CardsSchedule {
     } else if (name == "due") {
       return due;
     } else if (name == "overdue") {
-      return due;
+      return overdue;
     } else if (name == "learning") {
-      return due;
+      return learning;
     }
   }
 }

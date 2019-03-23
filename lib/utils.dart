@@ -139,7 +139,9 @@ class Utils {
   static forEachCalculSchedule(
       CardState cardState, DateTime now, CardsSchedule s) {
     String calculatedSchedule = computeScheduleFromCardState(cardState, now);
+
     List<CardId> rightSchedule = s.getPropertyValue(calculatedSchedule);
+
     rightSchedule.add(CardId(cardState));
   }
 

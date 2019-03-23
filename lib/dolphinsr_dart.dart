@@ -37,6 +37,8 @@ class DolphinSR {
 
     _state.cardStates[cardId.id] =
         CardState.makeInitialCardState(id: master.id, combination: combination);
+
+    print("${cardId.id}-${_state.cardStates[cardId.id].mode}");
   }
 
   addMasters(List<Master> masters) {
@@ -57,6 +59,8 @@ class DolphinSR {
     if (_cachedCardsSchedule != null) {
       return _cachedCardsSchedule;
     }
+
+
 
     _cachedCardsSchedule =
         Utils.computeCardsSchedule(_state, _currentDateGetter);
