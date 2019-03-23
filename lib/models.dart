@@ -71,7 +71,7 @@ abstract class CardState {
   CardState(this.master, this.combination, this.mode, this.consecutiveCorrect,
       this.lastReviewed, this.interval);
 
-  static makeInitialCardState({id, combination}) {
+  static makeInitialCardState({int id, Combination combination}) {
     return LearningCardState(
         master: id,
         combination: combination,

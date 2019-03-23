@@ -237,7 +237,7 @@ class Utils {
 
   static applyToCardState(CardState prev, DateTime ts, Rating rating) {
     if (prev.lastReviewed != null && prev.lastReviewed.isAfter(ts)) {
-      throw Exception("error");
+      throw ("Cannot apply review before current lastReviewed");
     }
 
     if (prev.mode == "learning") {
@@ -251,14 +251,14 @@ class Utils {
     throw Exception("Card mode is incorrect");
   }
 
-  static applyReview(State prev, Review review) {
+  static State applyReview(State prev, Review review) {
     CardId cardId = CardId.fromReview(review);
 
-    CardState cardState = prev.cardStates[cardId];
-
-    State newState;
-
-    newState.cardStates.addAll(prev.cardStates);
+    CardState cardState = prev.cardStates[cardId.id];
+    if (cardState == null) {
+      throw ("applying review to missing card: ${review.master}");
+    }
+    State newState = State(Map<int, CardState>.from(prev.cardStates));
 
     newState.cardStates[cardId.id] =
         applyToCardState(cardState, review.ts, review.rating);

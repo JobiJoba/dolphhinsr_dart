@@ -75,7 +75,37 @@ void main() {
     List<Review> subListReview = reviews.sublist(1);
     List<Review> listToTest = [r, reviews[0], s];
     listToTest.addAll(subListReview);
-    print("List $listToTest");
     expect(reviewAdded, equals(listToTest));
+  });
+
+  test("should add a review to an empty list", () {
+    State state = State.makeEmptyState();
+    int id = generateId();
+    Combination combination = Combination([], []);
+    Review review = Review(id, combination, Dates.today, Rating.Easy);
+
+    expect(() => Utils.applyReview(state, review), throwsA(startsWith("appl")));
+  });
+
+  test(
+      "should error if adding a review to a state with a lastReviewed later than the review",
+      () {
+    State state = State.makeEmptyState();
+    int id = generateId();
+    Combination combination = Combination([], []);
+
+    CardId cardId = CardId.fromIdAndCombi(id, combination);
+    state.cardStates[cardId.id] =
+        CardState.makeInitialCardState(id: id, combination: combination);
+
+    Review reviewLater = Review(id, combination, Dates.laterToday, Rating.Easy);
+    Review reviewToday = Review(id, combination, Dates.today, Rating.Easy);
+
+    State newState = Utils.applyReview(state, reviewLater);
+
+    Utils.applyReview(state, reviewToday);
+
+    expect(() => Utils.applyReview(newState, reviewToday),
+        throwsA(startsWith("Cannot apply review before current lastReviewed")));
   });
 }
