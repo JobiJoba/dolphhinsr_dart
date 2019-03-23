@@ -1,16 +1,16 @@
 # W.I.P
-This is currently not functional ! If you are interested in the project feel free to submit an improvement or else;
 
+This is currently not functional ! If you are interested in the project feel free to submit an improvement or else;
 
 # DolphinSR_Dart
 
 This projet is a copy of the DolphinSR algorithm from Yodaiken which was written in Javascript.
-I need something like that in DART ... so I'm translating it. [Link to original library](https://github.com/yodaiken/dolphinsr) 
+I need something like that in DART ... so I'm translating it. [Link to original library](https://github.com/yodaiken/dolphinsr)
 
 (Following is from the original module)
 
 DolphinSR implements [spaced repetition](https://en.wikipedia.org/wiki/Spaced_repetition) in
-JavaScript. Specifically, it uses [Anki's modifications](https://apps.ankiweb.net/docs/manual.html#what-algorithm)
+Dart. Specifically, it uses [Anki's modifications](https://apps.ankiweb.net/docs/manual.html#what-algorithm)
 to the SM2 algorithm including:
 
 - an initial mode for learning new cards
@@ -26,15 +26,13 @@ While DolphinSR is intentionally very similar to Anki's algorithm, it does devia
   make testing and debugging easier, and does not rely on storing computed data or any SQL database)
 - only one kind of card
 
-
 ## Installation
-Soon
 
+Soon
 
 ## Quick Start
 
 Soon
-
 
 ## API
 
