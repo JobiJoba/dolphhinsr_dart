@@ -16,16 +16,16 @@ void main() {
   DolphinSR dolphin = new DolphinSR();
 
   dolphin.addMasters(masters);
-  dolphin.addReview(reviews);
+  dolphin.addReviews(reviews);
 
   var stats =
       dolphin.summary(); // => { due: 0, later: 0, learning: 10, overdue: 0 }
   print("${stats.due}-${stats.later}-${stats.learning}-${stats.overdue}");
 
   Card card = dolphin.nextCard();
-
-  /* print(
+  print(
       "${card.back}-${card.front}-${card.combination.back}-${card.combination.front}");
+  /* 
 
   card = dolphin.nextCard();
 

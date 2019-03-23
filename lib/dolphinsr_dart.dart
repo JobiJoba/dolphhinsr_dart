@@ -46,7 +46,7 @@ class DolphinSR {
     _cachedCardsSchedule = null;
   }
 
-  addReview(List<Review> reviews) {
+  addReviews(List<Review> reviews) {
     _reviews.forEach((review) => foreachAddReview(review));
     _cachedCardsSchedule = null;
   }
@@ -59,8 +59,6 @@ class DolphinSR {
     if (_cachedCardsSchedule != null) {
       return _cachedCardsSchedule;
     }
-
-
 
     _cachedCardsSchedule =
         Utils.computeCardsSchedule(_state, _currentDateGetter);

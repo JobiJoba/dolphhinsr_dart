@@ -2,20 +2,20 @@ import 'package:dolphinsr_dart/models.dart';
 import 'dart:math' as math;
 
 class Utils {
-  static addReview(List<Review> reviews, Review review) {
+  static List<Review> addReview(List<Review> reviews, Review review) {
     if (reviews.length == 0) {
-      return review;
+      return [review];
     }
     var i = reviews.length - 1;
     for (; i >= 0; i -= 1) {
-      if (reviews[i].ts.isBefore(review.ts)) {
+      if (reviews[i].ts.isBefore(review.ts) ||
+          reviews[i].ts.isAtSameMomentAs(review.ts)) {
         break;
       }
     }
-//TODO DONT FORGET TO TEST THAT
+
     List<Review> newReviews = reviews.sublist(0);
-    newReviews = newReviews.sublist(i + 1, 0);
-    newReviews.add(review);
+    newReviews.insert(i + 1, review);
 
     return newReviews;
   }
