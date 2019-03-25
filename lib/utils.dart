@@ -53,7 +53,7 @@ class Utils {
       return LearningCardState(
           master: prev.master,
           combination: prev.combination,
-          consecutiveCorrect: prev.consecutiveCorrect - 1,
+          consecutiveCorrect: prev.consecutiveCorrect + 1,
           lastReviewed: ts);
     }
   }
@@ -66,13 +66,16 @@ class Utils {
     return math.max(math.min(n, max), min);
   }
 
-  static calculateDueDate(CardState state) {
+  static DateTime calculateDueDate(CardState state) {
     DateTime result = state.lastReviewed;
-    result.add(Duration(hours: 3));
-    var days = result.day - state.interval.ceil();
-    result.add(Duration(days: days));
 
-    return result;
+    var newHour = 3;
+    var newDay = result.day + state.interval.ceil();
+    DateTime newResult = result.toLocal();
+    newResult = DateTime(result.year, result.month, newDay, newHour,
+        result.minute, result.second, result.millisecond, result.microsecond);
+
+    return newResult;
   }
 
   static computeScheduleFromCardState(CardState state, DateTime now) {

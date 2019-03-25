@@ -9,7 +9,7 @@ class CardId {
   CardId(CardState state) {
     id = state.master;
     frontJoin = state.combination.front.join(',');
-    backJoin = state.combination.front.join(',');
+    backJoin = state.combination.back.join(',');
     time = state.lastReviewed;
 
     uniqueId = "$id#$frontJoin@$backJoin";
@@ -18,13 +18,13 @@ class CardId {
   CardId.fromIdAndCombi(int master, Combination combination) {
     id = master;
     frontJoin = combination.front.join(',');
-    backJoin = combination.front.join(',');
+    backJoin = combination.back.join(',');
     uniqueId = "$id#$frontJoin@$backJoin";
   }
   CardId.fromReview(Review review) {
     id = review.master;
     frontJoin = review.combination.front.join(',');
-    backJoin = review.combination.front.join(',');
+    backJoin = review.combination.back.join(',');
     time = review.ts;
     uniqueId = "$id#$frontJoin@$backJoin";
   }
@@ -77,6 +77,14 @@ abstract class CardState {
   CardState(this.master, this.combination, this.mode, this.consecutiveCorrect,
       this.lastReviewed, this.interval);
 
+  int get hashcode =>
+      master.hashCode ^ consecutiveCorrect.hashCode ^ interval.hashCode;
+
+  bool operator ==(o) =>
+      o is CardState &&
+      master == o.master &&
+      o.consecutiveCorrect == consecutiveCorrect;
+
   static makeInitialCardState({int id, Combination combination}) {
     return LearningCardState(
         master: id,
@@ -87,24 +95,17 @@ abstract class CardState {
 }
 
 class LearningCardState extends CardState {
-  @override
-  String mode = "learning";
-
   LearningCardState(
       {int master,
       Combination combination,
-      String mode,
       int consecutiveCorrect,
       DateTime lastReviewed,
       double interval})
-      : super(master, combination, mode, consecutiveCorrect, lastReviewed,
+      : super(master, combination, "learning", consecutiveCorrect, lastReviewed,
             interval);
 }
 
 class ReviewingCardState extends CardState {
-  @override
-  String mode = "reviewing";
-
   int factor;
   int lapses;
 
@@ -121,9 +122,6 @@ class ReviewingCardState extends CardState {
 }
 
 class LapsedCardState extends CardState {
-  @override
-  String mode = "lapsed";
-
   int factor;
   int lapses;
 
