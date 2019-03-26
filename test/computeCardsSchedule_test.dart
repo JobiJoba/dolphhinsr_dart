@@ -111,7 +111,7 @@ void main() {
   });
 
   test("should return an empty schedule when passed an empty state", () {
-    State emptyState = State.makeEmptyState();
+    DRState emptyState = DRState.makeEmptyState();
 
     expect(Utils.computeCardsSchedule(emptyState, Dates.today).learning.length,
         equals(0));
@@ -125,7 +125,7 @@ void main() {
 
   test("should a sorted list of cards when passed cards in multiple states",
       () {
-    State emptyState = State.makeEmptyState();
+    DRState emptyState = DRState.makeEmptyState();
 
     int id = generateId();
     Combination combination = Combination([0], [1]);
@@ -189,7 +189,7 @@ void main() {
 
   test("PickMostDue should return null when passed an empty schedule and state",
       () {
-    State emptyState = State.makeEmptyState();
+    DRState emptyState = DRState.makeEmptyState();
     CardsSchedule s = Utils.computeCardsSchedule(emptyState, Dates.today);
     var pickMostDue = Utils.pickMostDue(s, emptyState);
     expect(pickMostDue, isNull);
@@ -198,7 +198,7 @@ void main() {
   test(
       "PickMostDue should return the learning card reviewed most recently if two learning cards are in the deck",
       () {
-    State emptyState = State.makeEmptyState();
+    DRState emptyState = DRState.makeEmptyState();
 
     int id = generateId();
     Combination combination = Combination([0], [1]);

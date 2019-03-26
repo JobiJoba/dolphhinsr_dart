@@ -6,7 +6,7 @@ import 'package:dolphinsr_dart/src/utils.dart';
 export 'package:dolphinsr_dart/src/models.dart';
 
 class DolphinSR {
-  State _state;
+  DRState _state;
   Map<int, Master> _masters;
 
   CardsSchedule _cachedCardsSchedule;
@@ -14,7 +14,7 @@ class DolphinSR {
   DateTime currentDateGetter;
 
   DolphinSR({this.currentDateGetter}) {
-    _state = State.makeEmptyState();
+    _state = DRState.makeEmptyState();
     _masters = new Map();
 
     if (currentDateGetter == null) {
@@ -73,7 +73,7 @@ class DolphinSR {
     return Utils.pickMostDue(cardSchedule, _state);
   }
 
-  Card _getCard(CardId cardId) {
+  DRCard _getCard(CardId cardId) {
     Master master = _masters[cardId.id];
     if (master == null) {
       throw Exception("Master is null; cannot get card");
@@ -89,7 +89,7 @@ class DolphinSR {
     List<String> frontField = front.map((i) => master.fields[i]).toList();
     List<String> backFields = back.map((i) => master.fields[i]).toList();
 
-    Card card = Card(
+    DRCard card = DRCard(
         master: master.id,
         combination: combination,
         front: frontField,
@@ -98,7 +98,7 @@ class DolphinSR {
     return card;
   }
 
-  Card nextCard() {
+  DRCard nextCard() {
     var nextCardId = this._nextCardId();
     if (nextCardId == null) {
       return null;

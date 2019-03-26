@@ -56,17 +56,17 @@ class Review {
   Review(this.master, this.combination, this.ts, this.rating);
 }
 
-class Card {
+class DRCard {
   int master;
   Combination combination;
   List<String> front;
   List<String> back;
 
-  Card({this.master, this.combination, this.front, this.back});
+  DRCard({this.master, this.combination, this.front, this.back});
 
   int get hashCode => master.hashCode;
 
-  bool operator ==(o) => o is Card && master == o.master;
+  bool operator ==(o) => o is DRCard && master == o.master;
 }
 
 abstract class CardState {
@@ -133,13 +133,13 @@ class LapsedCardState extends CardState {
       : super(master, combination, "lapsed", lastReviewed, interval);
 }
 
-class State {
+class DRState {
   Map<String, CardState> cardStates;
   static makeEmptyState() {
-    return State(new Map());
+    return DRState(new Map());
   }
 
-  State(this.cardStates);
+  DRState(this.cardStates);
 }
 
 abstract class BaseScheduleAndStat {

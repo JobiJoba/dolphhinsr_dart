@@ -50,8 +50,8 @@ void main() {
 
     d.addMasters([master]);
 
-    Card nextCard = d.nextCard();
-    Card expectedCard = Card(
+    DRCard nextCard = d.nextCard();
+    DRCard expectedCard = DRCard(
         master: id,
         combination: Combination([0], [1, 0]),
         front: ["Hello"],
@@ -104,8 +104,8 @@ void main() {
 
     d.addMasters([master]);
 
-    Card nextCard = d.nextCard();
-    Card expectedCard = Card(
+    DRCard nextCard = d.nextCard();
+    DRCard expectedCard = DRCard(
         master: id,
         combination: Combination([0], [1, 0]),
         front: ["Hello"],

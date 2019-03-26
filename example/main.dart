@@ -20,7 +20,7 @@ void main() {
       dolphin.summary(); // => { due: 0, later: 0, learning: 2, overdue: 0 }
   print("${stats.due}-${stats.later}-${stats.learning}-${stats.overdue}");
 
-  Card card = dolphin.nextCard();
+  DRCard card = dolphin.nextCard();
   print(
       "${card.back}-${card.front}-${card.combination.back}-${card.combination.front}");
   Review review =

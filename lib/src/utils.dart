@@ -95,7 +95,7 @@ class Utils {
     throw Exception("Issue with mode and calculation of a cardState");
   }
 
-  static CardId pickMostDue(CardsSchedule s, State state) {
+  static CardId pickMostDue(CardsSchedule s, DRState state) {
     List<String> scheduleKey = ["learning", "overdue", "due"];
     for (int i = 0; i < scheduleKey.length; i++) {
       String key = scheduleKey[i];
@@ -131,7 +131,7 @@ class Utils {
     return null;
   }
 
-  static CardsSchedule computeCardsSchedule(State state, DateTime now) {
+  static CardsSchedule computeCardsSchedule(DRState state, DateTime now) {
     CardsSchedule s = CardsSchedule([], [], [], []);
 
     state.cardStates
@@ -254,14 +254,14 @@ class Utils {
     throw Exception("Card mode is incorrect");
   }
 
-  static State applyReview(State prev, Review review) {
+  static DRState applyReview(DRState prev, Review review) {
     CardId cardId = CardId.fromReview(review);
 
     CardState cardState = prev.cardStates[cardId.uniqueId];
     if (cardState == null) {
       throw ("applying review to missing card: ${review.master}");
     }
-    State newState = State(Map<String, CardState>.from(prev.cardStates));
+    DRState newState = DRState(Map<String, CardState>.from(prev.cardStates));
 
     newState.cardStates[cardId.uniqueId] =
         applyToCardState(cardState, review.ts, review.rating);

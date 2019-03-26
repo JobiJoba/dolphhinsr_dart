@@ -31,7 +31,7 @@ final List<Review> reviews = [
 
 void main() {
   test("should add a review to an empty list", () {
-    State state = State.makeEmptyState();
+    DRState state = DRState.makeEmptyState();
     int id = generateId();
     Combination combination = Combination([], []);
     Review review = Review(id, combination, Dates.today, Rating.Easy);
@@ -42,7 +42,7 @@ void main() {
   test(
       "should error if adding a review to a state with a lastReviewed later than the review",
       () {
-    State state = State.makeEmptyState();
+    DRState state = DRState.makeEmptyState();
     int id = generateId();
     Combination combination = Combination([0], [1]);
 
@@ -53,7 +53,7 @@ void main() {
     Review reviewLater = Review(id, combination, Dates.laterToday, Rating.Easy);
     Review reviewToday = Review(id, combination, Dates.today, Rating.Easy);
 
-    State newState = Utils.applyReview(state, reviewLater);
+    DRState newState = Utils.applyReview(state, reviewLater);
 
     Utils.applyReview(state, reviewToday);
 
@@ -64,7 +64,7 @@ void main() {
   test(
       "should return a new state reflecting the rating when adding a review to a state with the given master and combination",
       () {
-    State state = State.makeEmptyState();
+    DRState state = DRState.makeEmptyState();
     int id = generateId();
     Combination combination = Combination([0], [1]);
 
@@ -74,7 +74,7 @@ void main() {
 
     Review review = Review(id, combination, Dates.today, Rating.Good);
 
-    State newState = Utils.applyReview(state, review);
+    DRState newState = Utils.applyReview(state, review);
     LearningCardState learningCardStateAfterApply = LearningCardState(
         master: id,
         combination: combination,
@@ -87,7 +87,7 @@ void main() {
   test(
       "should accurately navigate through learning, reviewing, and lapsed modes",
       () {
-    State state = State.makeEmptyState();
+    DRState state = DRState.makeEmptyState();
     int id = generateId();
     Combination combination = Combination([0], [1]);
 
@@ -97,7 +97,7 @@ void main() {
 
     Review review = Review(id, combination, Dates.today, Rating.Good);
 
-    State stateB = Utils.applyReview(state, review);
+    DRState stateB = Utils.applyReview(state, review);
 
     LearningCardState learningCardStateAfterApply = LearningCardState(
         master: id,
@@ -110,7 +110,7 @@ void main() {
 
     Review reviewC = Review(id, combination, Dates.laterToday, Rating.Easy);
 
-    State stateC = Utils.applyReview(stateB, reviewC);
+    DRState stateC = Utils.applyReview(stateB, reviewC);
 
     ReviewingCardState processedCardC = stateC.cardStates[cardId.uniqueId];
 
@@ -132,7 +132,7 @@ void main() {
     expect(stateCDue, equals(datePlusFour));
 
     Review reviewD = Review(id, combination, stateCDue, Rating.Easy);
-    State stateD = Utils.applyReview(stateC, reviewD);
+    DRState stateD = Utils.applyReview(stateC, reviewD);
     ReviewingCardState learningCardStateAfterApplyD = ReviewingCardState(
         master: id,
         combination: combination,
@@ -148,7 +148,7 @@ void main() {
         Utils.calculateDueDate(stateD.cardStates[cardId.uniqueId]);
 
     Review reviewE = Review(id, combination, stateDDue, Rating.Again);
-    State stateE = Utils.applyReview(stateD, reviewE);
+    DRState stateE = Utils.applyReview(stateD, reviewE);
 
     LapsedCardState learningCardStateAfterApplyE = LapsedCardState(
         master: id,
@@ -164,7 +164,7 @@ void main() {
 
     DateTime reviewDateE = stateDDue.add(Duration(days: 1));
     Review reviewF = Review(id, combination, reviewDateE, Rating.Again);
-    State stateF = Utils.applyReview(stateE, reviewF);
+    DRState stateF = Utils.applyReview(stateE, reviewF);
 
     LapsedCardState learningCardStateAfterApplyF = LapsedCardState(
         master: id,
@@ -179,7 +179,7 @@ void main() {
 
     DateTime reviewDateG = stateDDue.add(Duration(days: 1));
     Review reviewG = Review(id, combination, reviewDateG, Rating.Easy);
-    State stateG = Utils.applyReview(stateF, reviewG);
+    DRState stateG = Utils.applyReview(stateF, reviewG);
 
     ReviewingCardState learningCardStateAfterApplyG = ReviewingCardState(
         master: id,
