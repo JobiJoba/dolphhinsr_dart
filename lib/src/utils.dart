@@ -1,4 +1,4 @@
-import 'package:dolphinsr_dart/models.dart';
+import 'package:dolphinsr_dart/src/models.dart';
 import 'dart:math' as math;
 
 class Utils {

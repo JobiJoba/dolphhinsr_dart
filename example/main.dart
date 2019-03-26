@@ -1,5 +1,4 @@
 import 'package:dolphinsr_dart/dolphinsr_dart.dart';
-import 'package:dolphinsr_dart/models.dart';
 
 void main() {
   List<Combination> thaiCombination = [

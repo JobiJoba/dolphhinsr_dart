@@ -1,7 +1,9 @@
 library dolphinsr_dart;
 
-import 'package:dolphinsr_dart/models.dart';
-import 'package:dolphinsr_dart/utils.dart';
+import 'package:dolphinsr_dart/src/models.dart';
+import 'package:dolphinsr_dart/src/utils.dart';
+
+export 'package:dolphinsr_dart/src/models.dart';
 
 class DolphinSR {
   State _state;
