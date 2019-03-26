@@ -132,7 +132,7 @@ void main() {
     expect(d.nextCard(), isNull);
   });
 
-  test("Will it works ? ", () {
+  /* test("Will it works ? ", () {
     DolphinSR d = DolphinSR(currentDateGetter: Dates.today);
     int id = generateId();
     Combination combination = Combination([0], [1, 0]);
@@ -156,5 +156,5 @@ void main() {
     d.addReviews([review]);
 
     expect(d.summary().later, equals(1));
-  });
+  }); */
 }
