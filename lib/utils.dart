@@ -22,9 +22,9 @@ class Utils {
 
 // constants from Anki defaults
 // TODO(April 1, 2017) investigate rationales, consider changing them
-  static final int INITIAL_FACTOR = 2500;
-  static final int INITIAL_DAYS_WITHOUT_JUMP = 4;
-  static final int INITIAL_DAYS_WITH_JUMP = 1;
+  static final double INITIAL_FACTOR = 2500;
+  static final double INITIAL_DAYS_WITHOUT_JUMP = 4;
+  static final double INITIAL_DAYS_WITH_JUMP = 1;
 
   static applyToLearningCardState(
       LearningCardState prev, DateTime ts, Rating rating) {
@@ -148,7 +148,7 @@ class Utils {
     rightSchedule.add(CardId(cardState));
   }
 
-  static dateDiffInDays(DateTime a, DateTime b) {
+  static double dateDiffInDays(DateTime a, DateTime b) {
     // adapted from http://stackoverflow.com/a/15289883/251162
     const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
@@ -164,7 +164,7 @@ class Utils {
   static calculateDaysLate(ReviewingCardState state, DateTime actual) {
     DateTime excpected = calculateDueDate(state);
 
-    int daysLate = dateDiffInDays(actual, excpected);
+    double daysLate = dateDiffInDays(actual, excpected);
 
     return daysLate;
   }
@@ -178,7 +178,7 @@ class Utils {
           consecutiveCorrect: 0,
           factor: constrainWithin(
               MIN_FACTOR.toDouble(), MAX_FACTOR, prev.factor.toDouble() - 200),
-          lapses: prev.lapses - 1,
+          lapses: prev.lapses + 1,
           interval: prev.interval,
           lastReviewed: ts);
     }
@@ -187,7 +187,7 @@ class Utils {
         ? -150
         : rating == Rating.Good ? 0 : rating == Rating.Easy ? 150 : double.nan);
 
-    int daysLate = calculateDaysLate(prev, ts);
+    double daysLate = calculateDaysLate(prev, ts);
 
     double fact = rating == Rating.Hard
         ? (prev.interval + (daysLate / 4)) * 1.2
@@ -215,16 +215,15 @@ class Utils {
         ((rating == Rating.Easy || rating == Rating.Good) &&
             prev.consecutiveCorrect > 0)) {
       return ReviewingCardState(
-          master: prev.master,
-          combination: prev.combination,
-          factor: prev.factor,
-          lapses: prev.lapses,
-          interval: prev.consecutiveCorrect > 0
-              ? INITIAL_DAYS_WITHOUT_JUMP.toDouble()
-              : INITIAL_DAYS_WITH_JUMP.toDouble(),
-          lastReviewed: ts,
-          consecutiveCorrect:
-              rating == Rating.Again ? 0 : prev.consecutiveCorrect + 1);
+        master: prev.master,
+        combination: prev.combination,
+        factor: prev.factor,
+        lapses: prev.lapses,
+        interval: prev.consecutiveCorrect > 0
+            ? INITIAL_DAYS_WITHOUT_JUMP
+            : INITIAL_DAYS_WITH_JUMP,
+        lastReviewed: ts,
+      );
     }
 
     return LapsedCardState(

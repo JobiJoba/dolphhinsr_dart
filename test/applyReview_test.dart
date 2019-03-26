@@ -75,8 +75,13 @@ void main() {
     Review review = Review(id, combination, Dates.today, Rating.Good);
 
     State newState = Utils.applyReview(state, review);
-
-    expect(newState.cardStates[cardId.uniqueId].consecutiveCorrect, equals(1));
+    LearningCardState learningCardStateAfterApply = LearningCardState(
+        master: id,
+        combination: combination,
+        consecutiveCorrect: 1,
+        lastReviewed: Dates.today);
+    expect(newState.cardStates[cardId.uniqueId],
+        equals(learningCardStateAfterApply));
   });
 
   test(
@@ -125,5 +130,65 @@ void main() {
     DateTime datePlusFour = Dates.todayAt3AM;
     datePlusFour = datePlusFour.add(Duration(days: 4));
     expect(stateCDue, equals(datePlusFour));
+
+    Review reviewD = Review(id, combination, stateCDue, Rating.Easy);
+    State stateD = Utils.applyReview(stateC, reviewD);
+    ReviewingCardState learningCardStateAfterApplyD = ReviewingCardState(
+        master: id,
+        combination: combination,
+        lapses: 0,
+        lastReviewed: stateCDue,
+        factor: 2650,
+        interval: 20);
+
+    expect(stateD.cardStates[cardId.uniqueId],
+        equals(learningCardStateAfterApplyD));
+
+    DateTime stateDDue =
+        Utils.calculateDueDate(stateD.cardStates[cardId.uniqueId]);
+
+    Review reviewE = Review(id, combination, stateDDue, Rating.Again);
+    State stateE = Utils.applyReview(stateD, reviewE);
+
+    LapsedCardState learningCardStateAfterApplyE = LapsedCardState(
+        master: id,
+        combination: combination,
+        consecutiveCorrect: 0,
+        lapses: 1,
+        lastReviewed: stateDDue,
+        factor: 2450,
+        interval: 20);
+
+    expect(stateE.cardStates[cardId.uniqueId],
+        equals(learningCardStateAfterApplyE));
+
+    DateTime reviewDateE = stateDDue.add(Duration(days: 1));
+    Review reviewF = Review(id, combination, reviewDateE, Rating.Again);
+    State stateF = Utils.applyReview(stateE, reviewF);
+
+    LapsedCardState learningCardStateAfterApplyF = LapsedCardState(
+        master: id,
+        combination: combination,
+        consecutiveCorrect: 0,
+        lapses: 1,
+        lastReviewed: reviewDateE,
+        factor: 2450,
+        interval: 20);
+    expect(stateF.cardStates[cardId.uniqueId],
+        equals(learningCardStateAfterApplyF));
+
+    DateTime reviewDateG = stateDDue.add(Duration(days: 1));
+    Review reviewG = Review(id, combination, reviewDateG, Rating.Easy);
+    State stateG = Utils.applyReview(stateF, reviewG);
+
+    ReviewingCardState learningCardStateAfterApplyG = ReviewingCardState(
+        master: id,
+        combination: combination,
+        lapses: 1,
+        lastReviewed: reviewDateG,
+        factor: 2450,
+        interval: 1);
+    expect(stateG.cardStates[cardId.uniqueId],
+        equals(learningCardStateAfterApplyG));
   });
 }

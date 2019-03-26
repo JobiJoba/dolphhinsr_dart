@@ -70,71 +70,63 @@ abstract class CardState {
   Combination combination;
 
   String mode;
-  int consecutiveCorrect;
   DateTime lastReviewed;
   double interval;
 
-  CardState(this.master, this.combination, this.mode, this.consecutiveCorrect,
-      this.lastReviewed, this.interval);
+  CardState(this.master, this.combination, this.mode, this.lastReviewed,
+      this.interval);
 
-  int get hashcode =>
-      master.hashCode ^ consecutiveCorrect.hashCode ^ interval.hashCode;
+  int get hashCode => master.hashCode ^ interval.hashCode;
 
-  bool operator ==(o) =>
-      o is CardState &&
-      master == o.master &&
-      o.consecutiveCorrect == consecutiveCorrect;
+  bool operator ==(o) => o is CardState && master == o.master;
 
   static makeInitialCardState({int id, Combination combination}) {
     return LearningCardState(
         master: id,
         combination: combination,
-        consecutiveCorrect: 0,
-        lastReviewed: null);
+        lastReviewed: null,
+        consecutiveCorrect: 0);
   }
 }
 
 class LearningCardState extends CardState {
+  int consecutiveCorrect;
   LearningCardState(
       {int master,
       Combination combination,
-      int consecutiveCorrect,
+      this.consecutiveCorrect,
       DateTime lastReviewed,
       double interval})
-      : super(master, combination, "learning", consecutiveCorrect, lastReviewed,
-            interval);
+      : super(master, combination, "learning", lastReviewed, interval);
 }
 
 class ReviewingCardState extends CardState {
-  int factor;
+  double factor;
   int lapses;
 
   ReviewingCardState({
     int master,
     Combination combination,
-    int consecutiveCorrect,
-    int factor,
-    int lapses,
+    this.factor,
+    this.lapses,
     double interval,
     DateTime lastReviewed,
-  }) : super(master, combination, "reviewing", consecutiveCorrect, lastReviewed,
-            interval);
+  }) : super(master, combination, "reviewing", lastReviewed, interval);
 }
 
 class LapsedCardState extends CardState {
-  int factor;
+  double factor;
   int lapses;
-
+  int consecutiveCorrect;
   LapsedCardState(
       {int master,
       Combination combination,
-      int consecutiveCorrect,
-      int factor,
-      int lapses,
+      this.consecutiveCorrect,
+      this.factor,
+      this.lapses,
       double interval,
       DateTime lastReviewed})
-      : super(master, combination, "lapsed", consecutiveCorrect, lastReviewed,
-            interval);
+      : super(master, combination, "lapsed", lastReviewed, interval);
 }
 
 class State {
