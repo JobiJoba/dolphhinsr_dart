@@ -8,7 +8,6 @@ export 'package:dolphinsr_dart/src/models.dart';
 class DolphinSR {
   State _state;
   Map<int, Master> _masters;
-  List<Review> _reviews;
 
   CardsSchedule _cachedCardsSchedule;
 
@@ -17,14 +16,14 @@ class DolphinSR {
   DolphinSR({this.currentDateGetter}) {
     _state = State.makeEmptyState();
     _masters = new Map();
-    _reviews = [];
+
     if (currentDateGetter == null) {
       currentDateGetter = DateTime.now();
     }
   }
 
   _addMaster(Master master) {
-    if (_masters.length > 0) {
+    if (_masters.isNotEmpty) {
       if (_masters.containsKey(master.id)) {
         throw Exception("Already added masters");
       }

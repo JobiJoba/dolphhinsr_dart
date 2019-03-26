@@ -3,7 +3,7 @@ import 'dart:math' as math;
 
 class Utils {
   static List<Review> addReview(List<Review> reviews, Review review) {
-    if (reviews.length == 0) {
+    if (reviews.isEmpty) {
       return [review];
     }
     var i = reviews.length - 1;
@@ -100,7 +100,7 @@ class Utils {
     for (int i = 0; i < scheduleKey.length; i++) {
       String key = scheduleKey[i];
       List<CardId> propertyValue = s.getPropertyValue(key);
-      if (propertyValue.length > 0) {
+      if (propertyValue.isNotEmpty) {
         List<CardId> first = propertyValue.sublist(0);
 
         first.sort((CardId a, CardId b) {
@@ -128,6 +128,7 @@ class Utils {
         return first[0];
       }
     }
+    return null;
   }
 
   static CardsSchedule computeCardsSchedule(State state, DateTime now) {
