@@ -1,6 +1,6 @@
 import 'package:dolphinsr_dart/models.dart';
 import 'package:dolphinsr_dart/utils.dart';
-import 'package:flutter_test/flutter_test.dart';
+import "package:test/test.dart";
 
 import 'dart:math' as math;
 import "dates.dart";

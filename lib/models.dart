@@ -62,7 +62,11 @@ class Card {
   List<String> front;
   List<String> back;
 
-  Card(this.master, this.combination, this.front, this.back);
+  Card({this.master, this.combination, this.front, this.back});
+
+  int get hashCode => master.hashCode;
+
+  bool operator ==(o) => o is Card && master == o.master;
 }
 
 abstract class CardState {
@@ -143,6 +147,17 @@ abstract class BaseScheduleAndStat {
   int due;
   int overdue;
   int learning;
+
+  int get hashCode =>
+      later.hashCode ^ due.hashCode ^ learning.hashCode ^ overdue.hashCode;
+
+  bool operator ==(o) =>
+      o is BaseScheduleAndStat &&
+      later == o.later &&
+      due == o.due &&
+      overdue == o.overdue &&
+      learning == o.learning;
+
   BaseScheduleAndStat(this.later, this.due, this.overdue, this.learning);
 }
 

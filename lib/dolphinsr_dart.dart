@@ -10,13 +10,15 @@ class DolphinSR {
 
   CardsSchedule _cachedCardsSchedule;
 
-  DateTime _currentDateGetter;
+  DateTime currentDateGetter;
 
-  DolphinSR() {
+  DolphinSR({this.currentDateGetter}) {
     _state = State.makeEmptyState();
     _masters = new Map();
     _reviews = [];
-    _currentDateGetter = DateTime.now();
+    if (currentDateGetter == null) {
+      currentDateGetter = DateTime.now();
+    }
   }
 
   _addMaster(Master master) {
@@ -47,7 +49,7 @@ class DolphinSR {
   }
 
   addReviews(List<Review> reviews) {
-    _reviews.forEach((review) => foreachAddReview(review));
+    reviews.forEach((review) => foreachAddReview(review));
     _cachedCardsSchedule = null;
   }
 
@@ -61,7 +63,7 @@ class DolphinSR {
     }
 
     _cachedCardsSchedule =
-        Utils.computeCardsSchedule(_state, _currentDateGetter);
+        Utils.computeCardsSchedule(_state, currentDateGetter);
     return _cachedCardsSchedule;
   }
 
@@ -86,7 +88,11 @@ class DolphinSR {
     List<String> frontField = front.map((i) => master.fields[i]).toList();
     List<String> backFields = back.map((i) => master.fields[i]).toList();
 
-    Card card = Card(master.id, combination, frontField, backFields);
+    Card card = Card(
+        master: master.id,
+        combination: combination,
+        front: frontField,
+        back: backFields);
 
     return card;
   }

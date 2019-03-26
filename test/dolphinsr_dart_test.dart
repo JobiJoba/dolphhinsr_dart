@@ -1,6 +1,6 @@
+import 'package:dolphinsr_dart/dolphinsr_dart.dart';
 import 'package:dolphinsr_dart/models.dart';
-import 'package:dolphinsr_dart/utils.dart';
-import 'package:flutter_test/flutter_test.dart';
+import "package:test/test.dart";
 
 import 'dart:math' as math;
 import "dates.dart";
@@ -30,51 +30,131 @@ final List<Review> reviews = [
 ].map(makeReview).toList();
 
 void main() {
-  test("should add a review to an empty list", () {
-    var reviewAdded = Utils.addReview([], reviews[0]);
-    expect(reviewAdded, equals([reviews[0]]));
+  test("should start out empty", () {
+    DolphinSR d = DolphinSR();
+    expect(d.nextCard(), isNull);
+
+    SummaryStatics s = SummaryStatics(0, 0, 0, 0);
+    expect(d.summary(), equals(s));
   });
 
-  test("should add a later review after a earlier review", () {
-    var reviewAdded = Utils.addReview([reviews[0]], reviews[1]);
-    expect(reviewAdded, equals([reviews[0], reviews[1]]));
+  test("should add a new masters to the learning", () {
+    DolphinSR d = DolphinSR();
+    int id = generateId();
+    Master master = Master(id, [
+      'Hello',
+      "world"
+    ], [
+      Combination([0], [1, 0])
+    ]);
+
+    d.addMasters([master]);
+
+    Card nextCard = d.nextCard();
+    Card expectedCard = Card(
+        master: id,
+        combination: Combination([0], [1, 0]),
+        front: ["Hello"],
+        back: ["world", "Hello"]);
+    expect(nextCard, equals(expectedCard));
   });
 
-  test("should add an earlier review before a later review", () {
-    var reviewAdded = Utils.addReview([reviews[1]], reviews[0]);
-    expect(reviewAdded, equals([reviews[0], reviews[1]]));
+  test("should add multiple new masters to the learning category", () {
+    DolphinSR d = DolphinSR();
+    int id = generateId();
+    Master master = Master(id, [
+      'Hello',
+      "world"
+    ], [
+      Combination([0], [1, 0])
+    ]);
+    int id2 = generateId();
+
+    Master master2 = Master(id2, [
+      'Hello',
+      "world"
+    ], [
+      Combination([0], [1, 0])
+    ]);
+
+    d.addMasters([master, master2]);
+
+    SummaryStatics s = SummaryStatics(0, 0, 0, 2);
+    expect(d.summary(), equals(s));
+
+    int id3 = generateId();
+
+    Master master3 = Master(id3, [
+      'Hello',
+      "world"
+    ], [
+      Combination([0], [1, 0])
+    ]);
+
+    d.addMasters([master3]);
+    s = SummaryStatics(0, 0, 0, 3);
+    expect(d.summary(), equals(s));
   });
 
-  test("should add an earlier review before a couple later reviews", () {
-    var reviewAdded = Utils.addReview(reviews.sublist(1), reviews[0]);
-    expect(reviewAdded, equals(reviews));
+  test("should add reviews", () {
+    DolphinSR d = DolphinSR(currentDateGetter: Dates.today);
+    int id = generateId();
+    Combination combination = Combination([0], [1, 0]);
+    Master master = Master(id, ['Hello', "world"], [combination]);
+
+    d.addMasters([master]);
+
+    Card nextCard = d.nextCard();
+    Card expectedCard = Card(
+        master: id,
+        combination: Combination([0], [1, 0]),
+        front: ["Hello"],
+        back: ["world", "Hello"]);
+    expect(nextCard, equals(expectedCard));
+    expect(d.summary().learning, equals(1));
+
+    Review review = Review(id, combination, Dates.today, Rating.Easy);
+    d.addReviews([review]);
+
+    expect(d.summary().later, equals(1));
+    expect(d.nextCard(), isNull);
+
+    Master secondMaster =
+        Master(generateId(), ['Hello', "world"], [combination]);
+    d.addMasters([secondMaster]);
+    expect(d.summary().learning, equals(1));
+    expect(d.summary().later, equals(1));
+    d.addReviews([
+      Review(secondMaster.id, secondMaster.combinations[0], Dates.today,
+          Rating.Easy)
+    ]);
+    expect(d.summary().later, equals(2));
+    expect(d.nextCard(), isNull);
   });
 
-  test("should add a review in between reviews", () {
-    var reviewAdded = Utils.addReview(
-        [reviews[0], reviews[1], reviews[2], reviews[4], reviews[5]],
-        reviews[3]);
-    expect(reviewAdded, equals(reviews));
-  });
+  test("Will it works ? ", () {
+    DolphinSR d = DolphinSR(currentDateGetter: Dates.today);
+    int id = generateId();
+    Combination combination = Combination([0], [1, 0]);
+    Master master = Master(id, ['Hello', "world"], [combination]);
 
-  test("should add an unidentical review with a same timestamp after", () {
-    Review r = makeReview(Dates.today);
-    Review s = makeReview(Dates.today);
-    s.rating = Rating.Again;
+    d.addMasters([master]);
 
-    var reviewAdded = Utils.addReview([r], s);
+    Card nextCard = d.nextCard();
+    Card expectedCard = Card(
+        master: id,
+        combination: Combination([0], [1, 0]),
+        front: ["Hello"],
+        back: ["world", "Hello"]);
+    expect(nextCard, equals(expectedCard));
+    expect(d.summary().learning, equals(1));
 
-    expect(reviewAdded, equals([r, s]));
-    reviewAdded = Utils.addReview([s], r);
-    expect(reviewAdded, equals([s, r]));
+    Review review = Review(id, combination, Dates.laterTmrw, Rating.Easy);
+    d.addReviews([review]);
+    d.currentDateGetter = Dates.laterTmrw;
+    review.ts = Dates.today;
+    d.addReviews([review]);
 
-    List<Review> newListToAddToReview = [r];
-    newListToAddToReview.addAll(reviews);
-    reviewAdded = Utils.addReview(newListToAddToReview, s);
-
-    List<Review> subListReview = reviews.sublist(1);
-    List<Review> listToTest = [r, reviews[0], s];
-    listToTest.addAll(subListReview);
-    expect(reviewAdded, equals(listToTest));
+    expect(d.summary().later, equals(1));
   });
 }
