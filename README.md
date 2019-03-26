@@ -1,6 +1,5 @@
-# W.I.P
+[![Build Status](https://travis-ci.org/JobiJoba/dolphhinsr_dart.svg?branch=master)](https://travis-ci.org/valgene/valgene-cli#)
 
-This is currently not functional ! If you are interested in the project feel free to submit an improvement or else;
 
 # DolphinSR_Dart
 
