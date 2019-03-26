@@ -95,7 +95,7 @@ class Utils {
     throw Exception("Issue with mode and calculation of a cardState");
   }
 
-  static pickMostDue(CardsSchedule s, State state) {
+  static CardId pickMostDue(CardsSchedule s, State state) {
     List<String> scheduleKey = ["learning", "overdue", "due"];
     for (int i = 0; i < scheduleKey.length; i++) {
       String key = scheduleKey[i];
@@ -104,8 +104,8 @@ class Utils {
         List<CardId> first = propertyValue.sublist(0);
 
         first.sort((CardId a, CardId b) {
-          CardState cardA = state.cardStates[a.id];
-          CardState cardB = state.cardStates[b.id];
+          CardState cardA = state.cardStates[a.uniqueId];
+          CardState cardB = state.cardStates[b.uniqueId];
 
           var reviewDiff = (cardA.lastReviewed == null &&
                   cardB.lastReviewed != null)
@@ -130,7 +130,7 @@ class Utils {
     }
   }
 
-  static computeCardsSchedule(State state, DateTime now) {
+  static CardsSchedule computeCardsSchedule(State state, DateTime now) {
     CardsSchedule s = CardsSchedule([], [], [], []);
 
     state.cardStates
@@ -266,5 +266,12 @@ class Utils {
         applyToCardState(cardState, review.ts, review.rating);
 
     return newState;
+  }
+
+  static String getCardIdFromCardState(CardState cardState) {
+    int id = cardState.master;
+    String frontJoin = cardState.combination.front.join(",");
+    String backJoin = cardState.combination.back.join(",");
+    return "$id#$frontJoin@$backJoin";
   }
 }
