@@ -1,8 +1,8 @@
 name: dolphinsr_dart
 description: A spaced-repetition algorithm in dart.
 version: 1.0.0
-author:
-homepage:
+author: Johann Baziret
+homepage: https://github.com/JobiJoba/dolphhinsr_dart
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
