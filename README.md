@@ -27,12 +27,46 @@ While DolphinSR is intentionally very similar to Anki's algorithm, it does devia
 
 ## Installation
 
-Soon
+Add that to your pubspec.yaml
+
+```yaml
+dependencies:
+ dolphinsr_dart: "^1.0.0"
+```
 
 ## Quick Start
 
-Soon
+See [example/main.dart](https://github.com/JobiJoba/dolphhinsr_dart/blob/master/example/main.dart)
 
-## API
+```dart
+List<Combination> thaiCombination = [
+    Combination([0], [1]),
+    Combination([1], [0]),
+  ];
+  List<Master> masters = [];
+  masters.add(Master(1, ['คน', 'person'], thaiCombination));
+  masters.add(Master(2, ['คบ', 'To date'], thaiCombination));
 
-Soon
+  List<Review> reviews = [];
+
+  DolphinSR dolphin = new DolphinSR();
+
+  dolphin.addMasters(masters);
+  dolphin.addReviews(reviews);
+
+  var stats =
+      dolphin.summary(); // => { due: 0, later: 0, learning: 2, overdue: 0 }
+  print("${stats.due}-${stats.later}-${stats.learning}-${stats.overdue}");
+
+  Card card = dolphin.nextCard();
+  print(
+      "${card.back}-${card.front}-${card.combination.back}-${card.combination.front}");
+  Review review =
+      Review(card.master, card.combination, DateTime.now(), Rating.Easy);
+  dolphin.addReviews([review]);
+
+  card = dolphin.nextCard();
+
+```
+
+
