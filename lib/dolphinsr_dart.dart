@@ -40,8 +40,6 @@ class DolphinSR {
 
     _state.cardStates[cardId.uniqueId] =
         CardState.makeInitialCardState(id: master.id, combination: combination);
-
-    print("${cardId.id}-${_state.cardStates[cardId.uniqueId].mode}");
   }
 
   addMasters(List<Master> masters) {

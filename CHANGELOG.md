@@ -1,3 +1,8 @@
+## [1.0.5] - 02/04/2019
+
+- Fix issue when selecting hard multiple time
+- Remove a print in the code
+
 ## [1.0.4] - 26/03/2019
 
 - Release on pub dart

@@ -42,14 +42,13 @@ class Utils {
           lapses: 0,
           interval: interval.toDouble(),
           lastReviewed: ts);
-    } else if (rating == Rating.Again) {
+    } else if (rating == Rating.Again || rating == Rating.Hard) {
       return LearningCardState(
           master: prev.master,
           combination: prev.combination,
           consecutiveCorrect: 0,
           lastReviewed: ts);
-    } else if ((rating == Rating.Good || rating == Rating.Hard) &&
-        prev.consecutiveCorrect < 1) {
+    } else if ((rating == Rating.Good) && prev.consecutiveCorrect < 1) {
       return LearningCardState(
           master: prev.master,
           combination: prev.combination,
