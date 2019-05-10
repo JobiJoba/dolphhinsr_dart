@@ -36,7 +36,7 @@ class DolphinSR {
   }
 
   foreachMaster(Combination combination, Master master) {
-    CardId cardId = CardId.fromIdAndCombi(master.id, combination);
+    CardId cardId = CardId(master: master.id, combination: combination);
 
     _state.cardStates[cardId.uniqueId] =
         CardState.makeInitialCardState(id: master.id, combination: combination);
@@ -82,7 +82,7 @@ class DolphinSR {
     List<int> back =
         cardId.backJoin.split(',').map((elem) => int.parse(elem)).toList();
 
-    Combination combination = Combination(front, back);
+    Combination combination = Combination(front: front, back: back);
 
     List<String> frontField = front.map((i) => master.fields[i]).toList();
     List<String> backFields = back.map((i) => master.fields[i]).toList();
@@ -108,7 +108,10 @@ class DolphinSR {
   SummaryStatics summary() {
     CardsSchedule s = _getCardsSchedule();
     SummaryStatics summary = SummaryStatics(
-        s.later.length, s.due.length, s.overdue.length, s.learning.length);
+        later: s.later.length,
+        due: s.due.length,
+        overdue: s.overdue.length,
+        learning: s.learning.length);
 
     return summary;
   }

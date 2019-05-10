@@ -131,7 +131,8 @@ class Utils {
   }
 
   static CardsSchedule computeCardsSchedule(DRState state, DateTime now) {
-    CardsSchedule s = CardsSchedule([], [], [], []);
+    CardsSchedule s =
+        CardsSchedule(later: [], due: [], overdue: [], learning: []);
 
     state.cardStates
         .forEach((id, value) => forEachCalculSchedule(value, now, s));
@@ -145,7 +146,7 @@ class Utils {
 
     List<CardId> rightSchedule = s.getPropertyValue(calculatedSchedule);
 
-    rightSchedule.add(CardId(cardState));
+    rightSchedule.add(CardId.fromState(cardState));
   }
 
   static double dateDiffInDays(DateTime a, DateTime b) {

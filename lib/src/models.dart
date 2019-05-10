@@ -6,7 +6,14 @@ class CardId {
 
   String uniqueId;
 
-  CardId(CardState state) {
+  CardId({int master, Combination combination}) {
+    id = master;
+    frontJoin = combination.front.join(',');
+    backJoin = combination.back.join(',');
+    uniqueId = "$id#$frontJoin@$backJoin";
+  }
+
+  CardId.fromState(CardState state) {
     id = state.master;
     frontJoin = state.combination.front.join(',');
     backJoin = state.combination.back.join(',');
@@ -15,12 +22,6 @@ class CardId {
     uniqueId = "$id#$frontJoin@$backJoin";
   }
 
-  CardId.fromIdAndCombi(int master, Combination combination) {
-    id = master;
-    frontJoin = combination.front.join(',');
-    backJoin = combination.back.join(',');
-    uniqueId = "$id#$frontJoin@$backJoin";
-  }
   CardId.fromReview(Review review) {
     id = review.master;
     frontJoin = review.combination.front.join(',');
@@ -34,7 +35,7 @@ class Combination {
   List<int> front;
   List<int> back;
 
-  Combination(this.front, this.back);
+  Combination({this.front, this.back});
 }
 
 class Master {
@@ -42,7 +43,7 @@ class Master {
   List<String> fields;
   List<Combination> combinations;
 
-  Master(this.id, this.fields, this.combinations);
+  Master({this.id, this.fields, this.combinations});
 }
 
 enum Rating { Easy, Good, Hard, Again }
@@ -53,7 +54,7 @@ class Review {
   DateTime ts;
   Rating rating;
 
-  Review(this.master, this.combination, this.ts, this.rating);
+  Review({this.master, this.combination, this.ts, this.rating});
 }
 
 class DRCard {
@@ -162,12 +163,12 @@ abstract class BaseScheduleAndStat {
 }
 
 class Schedule extends BaseScheduleAndStat {
-  Schedule(int later, int due, int overdue, int learning)
+  Schedule({int later, int due, int overdue, int learning})
       : super(later, due, overdue, learning);
 }
 
 class SummaryStatics extends BaseScheduleAndStat {
-  SummaryStatics(int later, int due, int overdue, int learning)
+  SummaryStatics({int later, int due, int overdue, int learning})
       : super(later, due, overdue, learning);
 }
 
@@ -177,7 +178,7 @@ class CardsSchedule {
   List<CardId> overdue;
   List<CardId> learning;
 
-  CardsSchedule(this.later, this.due, this.overdue, this.learning);
+  CardsSchedule({this.later, this.due, this.overdue, this.learning});
 
   getPropertyValue(String name) {
     if (name == "later") {
