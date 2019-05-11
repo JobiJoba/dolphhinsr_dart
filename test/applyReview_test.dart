@@ -13,10 +13,10 @@ generateId() {
 
 Review makeReview(DateTime ts) {
   return Review(
-    math.Random().nextInt(666),
-    Combination([0], [1]),
-    ts,
-    Rating.Easy,
+    master: math.Random().nextInt(666),
+    combination: Combination(front: [0], back: [1]),
+    ts: ts,
+    rating: Rating.Easy,
   );
 }
 
@@ -33,8 +33,12 @@ void main() {
   test("should add a review to an empty list", () {
     DRState state = DRState.makeEmptyState();
     int id = generateId();
-    Combination combination = Combination([], []);
-    Review review = Review(id, combination, Dates.today, Rating.Easy);
+    Combination combination = Combination(front: [], back: []);
+    Review review = Review(
+        master: id,
+        combination: combination,
+        ts: Dates.today,
+        rating: Rating.Easy);
 
     expect(() => Utils.applyReview(state, review), throwsA(startsWith("appl")));
   });
@@ -44,14 +48,22 @@ void main() {
       () {
     DRState state = DRState.makeEmptyState();
     int id = generateId();
-    Combination combination = Combination([0], [1]);
+    Combination combination = Combination(front: [0], back: [1]);
 
-    CardId cardId = CardId.fromIdAndCombi(id, combination);
+    CardId cardId = CardId(master: id, combination: combination);
     state.cardStates[cardId.uniqueId] =
         CardState.makeInitialCardState(id: id, combination: combination);
 
-    Review reviewLater = Review(id, combination, Dates.laterToday, Rating.Easy);
-    Review reviewToday = Review(id, combination, Dates.today, Rating.Easy);
+    Review reviewLater = Review(
+        master: id,
+        combination: combination,
+        ts: Dates.laterToday,
+        rating: Rating.Easy);
+    Review reviewToday = Review(
+        master: id,
+        combination: combination,
+        ts: Dates.today,
+        rating: Rating.Easy);
 
     DRState newState = Utils.applyReview(state, reviewLater);
 
@@ -66,13 +78,17 @@ void main() {
       () {
     DRState state = DRState.makeEmptyState();
     int id = generateId();
-    Combination combination = Combination([0], [1]);
+    Combination combination = Combination(front: [0], back: [1]);
 
-    CardId cardId = CardId.fromIdAndCombi(id, combination);
+    CardId cardId = CardId(master: id, combination: combination);
     state.cardStates[cardId.uniqueId] =
         CardState.makeInitialCardState(id: id, combination: combination);
 
-    Review review = Review(id, combination, Dates.today, Rating.Good);
+    Review review = Review(
+        master: id,
+        combination: combination,
+        ts: Dates.today,
+        rating: Rating.Good);
 
     DRState newState = Utils.applyReview(state, review);
     LearningCardState learningCardStateAfterApply = LearningCardState(
@@ -89,13 +105,17 @@ void main() {
       () {
     DRState state = DRState.makeEmptyState();
     int id = generateId();
-    Combination combination = Combination([0], [1]);
+    Combination combination = Combination(front: [0], back: [1]);
 
-    CardId cardId = CardId.fromIdAndCombi(id, combination);
+    CardId cardId = CardId(master: id, combination: combination);
     state.cardStates[cardId.uniqueId] =
         CardState.makeInitialCardState(id: id, combination: combination);
 
-    Review review = Review(id, combination, Dates.today, Rating.Good);
+    Review review = Review(
+        master: id,
+        combination: combination,
+        ts: Dates.today,
+        rating: Rating.Good);
 
     DRState stateB = Utils.applyReview(state, review);
 
@@ -108,7 +128,11 @@ void main() {
     LearningCardState processedCard = stateB.cardStates[cardId.uniqueId];
     expect(processedCard, equals(learningCardStateAfterApply));
 
-    Review reviewC = Review(id, combination, Dates.laterToday, Rating.Easy);
+    Review reviewC = Review(
+        master: id,
+        combination: combination,
+        ts: Dates.laterToday,
+        rating: Rating.Easy);
 
     DRState stateC = Utils.applyReview(stateB, reviewC);
 
@@ -131,7 +155,11 @@ void main() {
     datePlusFour = datePlusFour.add(Duration(days: 4));
     expect(stateCDue, equals(datePlusFour));
 
-    Review reviewD = Review(id, combination, stateCDue, Rating.Easy);
+    Review reviewD = Review(
+        master: id,
+        combination: combination,
+        ts: stateCDue,
+        rating: Rating.Easy);
     DRState stateD = Utils.applyReview(stateC, reviewD);
     ReviewingCardState learningCardStateAfterApplyD = ReviewingCardState(
         master: id,
@@ -147,7 +175,11 @@ void main() {
     DateTime stateDDue =
         Utils.calculateDueDate(stateD.cardStates[cardId.uniqueId]);
 
-    Review reviewE = Review(id, combination, stateDDue, Rating.Again);
+    Review reviewE = Review(
+        master: id,
+        combination: combination,
+        ts: stateDDue,
+        rating: Rating.Again);
     DRState stateE = Utils.applyReview(stateD, reviewE);
 
     LapsedCardState learningCardStateAfterApplyE = LapsedCardState(
@@ -163,7 +195,11 @@ void main() {
         equals(learningCardStateAfterApplyE));
 
     DateTime reviewDateE = stateDDue.add(Duration(days: 1));
-    Review reviewF = Review(id, combination, reviewDateE, Rating.Again);
+    Review reviewF = Review(
+        master: id,
+        combination: combination,
+        ts: reviewDateE,
+        rating: Rating.Again);
     DRState stateF = Utils.applyReview(stateE, reviewF);
 
     LapsedCardState learningCardStateAfterApplyF = LapsedCardState(
@@ -178,7 +214,11 @@ void main() {
         equals(learningCardStateAfterApplyF));
 
     DateTime reviewDateG = stateDDue.add(Duration(days: 1));
-    Review reviewG = Review(id, combination, reviewDateG, Rating.Easy);
+    Review reviewG = Review(
+        master: id,
+        combination: combination,
+        ts: reviewDateG,
+        rating: Rating.Easy);
     DRState stateG = Utils.applyReview(stateF, reviewG);
 
     ReviewingCardState learningCardStateAfterApplyG = ReviewingCardState(

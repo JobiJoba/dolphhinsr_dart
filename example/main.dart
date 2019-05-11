@@ -1,19 +1,34 @@
 import 'package:dolphinsr_dart/dolphinsr_dart.dart';
 
 void main() {
-  List<Combination> thaiCombination = [
-    Combination([0], [1]),
-    Combination([1], [0]),
-  ];
-  List<Master> masters = [];
-  masters.add(Master(1, ['คน', 'person'], thaiCombination));
-  masters.add(Master(2, ['คบ', 'To date'], thaiCombination));
+  // List<Combination> thaiCombination = [
+  //   Combination(front:[0], back:[1]),
+  //   Combination(front:[1], back:[0]),
+  // ];
+  //List<Master> masters = [];
+  //masters.add();
+  // masters.add();
 
   List<Review> reviews = [];
 
   DolphinSR dolphin = new DolphinSR();
 
-  dolphin.addMasters(masters);
+  dolphin.addMasters([
+    Master(id: 1, fields: [
+      'คน',
+      'person'
+    ], combinations: [
+      Combination(front: [0], back: [1]),
+      Combination(front: [1], back: [0]),
+    ]),
+    Master(id: 2, fields: [
+      'คบ',
+      'To date'
+    ], combinations: [
+      Combination(front: [0], back: [1]),
+      Combination(front: [1], back: [0]),
+    ])
+  ]);
   dolphin.addReviews(reviews);
 
   var stats =
@@ -23,25 +38,22 @@ void main() {
   DRCard card = dolphin.nextCard();
   print(
       "${card.back}-${card.front}-${card.combination.back}-${card.combination.front}");
-  Review review =
-      Review(card.master, card.combination, DateTime.now(), Rating.Hard);
+  Review review = Review(
+      master: card.master,
+      combination: card.combination,
+      ts: DateTime.now(),
+      rating: Rating.Hard);
   dolphin.addReviews([review]);
 
   card = dolphin.nextCard();
   print(
       "${card.back}-${card.front}-${card.combination.back}-${card.combination.front}");
 
-  review = Review(card.master, card.combination, DateTime.now(), Rating.Hard);
-  dolphin.addReviews([review]);
-
-  stats =
-      dolphin.summary(); // => { due: 0, later: 0, learning: 10, overdue: 0 }
-  print("${stats.due}-${stats.later}-${stats.learning}-${stats.overdue}");
-
-  card = dolphin.nextCard();
-  print(
-      "${card.back}-${card.front}-${card.combination.back}-${card.combination.front}");
-  review = Review(card.master, card.combination, DateTime.now(), Rating.Hard);
+  review = Review(
+      master: card.master,
+      combination: card.combination,
+      ts: DateTime.now(),
+      rating: Rating.Hard);
   dolphin.addReviews([review]);
 
   stats =
@@ -51,7 +63,11 @@ void main() {
   card = dolphin.nextCard();
   print(
       "${card.back}-${card.front}-${card.combination.back}-${card.combination.front}");
-  review = Review(card.master, card.combination, DateTime.now(), Rating.Hard);
+  review = Review(
+      master: card.master,
+      combination: card.combination,
+      ts: DateTime.now(),
+      rating: Rating.Hard);
   dolphin.addReviews([review]);
 
   stats =
@@ -61,7 +77,11 @@ void main() {
   card = dolphin.nextCard();
   print(
       "${card.back}-${card.front}-${card.combination.back}-${card.combination.front}");
-  review = Review(card.master, card.combination, DateTime.now(), Rating.Hard);
+  review = Review(
+      master: card.master,
+      combination: card.combination,
+      ts: DateTime.now(),
+      rating: Rating.Hard);
   dolphin.addReviews([review]);
 
   stats =
@@ -71,7 +91,11 @@ void main() {
   card = dolphin.nextCard();
   print(
       "${card.back}-${card.front}-${card.combination.back}-${card.combination.front}");
-  review = Review(card.master, card.combination, DateTime.now(), Rating.Hard);
+  review = Review(
+      master: card.master,
+      combination: card.combination,
+      ts: DateTime.now(),
+      rating: Rating.Hard);
   dolphin.addReviews([review]);
 
   stats =
@@ -81,7 +105,11 @@ void main() {
   card = dolphin.nextCard();
   print(
       "${card.back}-${card.front}-${card.combination.back}-${card.combination.front}");
-  review = Review(card.master, card.combination, DateTime.now(), Rating.Hard);
+  review = Review(
+      master: card.master,
+      combination: card.combination,
+      ts: DateTime.now(),
+      rating: Rating.Hard);
   dolphin.addReviews([review]);
 
   stats =
@@ -91,7 +119,11 @@ void main() {
   card = dolphin.nextCard();
   print(
       "${card.back}-${card.front}-${card.combination.back}-${card.combination.front}");
-  review = Review(card.master, card.combination, DateTime.now(), Rating.Hard);
+  review = Review(
+      master: card.master,
+      combination: card.combination,
+      ts: DateTime.now(),
+      rating: Rating.Hard);
   dolphin.addReviews([review]);
 
   stats =
@@ -101,7 +133,25 @@ void main() {
   card = dolphin.nextCard();
   print(
       "${card.back}-${card.front}-${card.combination.back}-${card.combination.front}");
-  review = Review(card.master, card.combination, DateTime.now(), Rating.Hard);
+  review = Review(
+      master: card.master,
+      combination: card.combination,
+      ts: DateTime.now(),
+      rating: Rating.Hard);
+  dolphin.addReviews([review]);
+
+  stats =
+      dolphin.summary(); // => { due: 0, later: 0, learning: 10, overdue: 0 }
+  print("${stats.due}-${stats.later}-${stats.learning}-${stats.overdue}");
+
+  card = dolphin.nextCard();
+  print(
+      "${card.back}-${card.front}-${card.combination.back}-${card.combination.front}");
+  review = Review(
+      master: card.master,
+      combination: card.combination,
+      ts: DateTime.now(),
+      rating: Rating.Hard);
   dolphin.addReviews([review]);
 
   stats =

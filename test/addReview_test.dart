@@ -13,10 +13,10 @@ generateId() {
 
 Review makeReview(DateTime ts) {
   return Review(
-    math.Random().nextInt(666),
-    Combination([0], [1]),
-    ts,
-    Rating.Easy,
+    master: math.Random().nextInt(666),
+    combination: Combination(front: [0], back: [1]),
+    ts: ts,
+    rating: Rating.Easy,
   );
 }
 

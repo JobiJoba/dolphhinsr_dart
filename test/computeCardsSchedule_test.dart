@@ -13,10 +13,10 @@ generateId() {
 
 Review makeReview(DateTime ts) {
   return Review(
-    math.Random().nextInt(666),
-    Combination([0], [1]),
-    ts,
-    Rating.Easy,
+    master: math.Random().nextInt(666),
+    combination: Combination(front: [0], back: [1]),
+    ts: ts,
+    rating: Rating.Easy,
   );
 }
 
@@ -32,7 +32,7 @@ final List<Review> reviews = [
 void main() {
   test("should add a rounded interval to the lastReviewed, set at 3am", () {
     int id = generateId();
-    Combination combination = Combination([0], [1]);
+    Combination combination = Combination(front: [0], back: [1]);
     ReviewingCardState stateCard = ReviewingCardState(
         master: id,
         combination: combination,
@@ -48,7 +48,7 @@ void main() {
   });
   test("should return later for cards that are reviewing and not yet due", () {
     int id = generateId();
-    Combination combination = Combination([0], [1]);
+    Combination combination = Combination(front: [0], back: [1]);
 
     ReviewingCardState stateCard = ReviewingCardState(
         master: id,
@@ -67,7 +67,7 @@ void main() {
   test("should return due for cards that are reviewing and due within the day",
       () {
     int id = generateId();
-    Combination combination = Combination([0], [1]);
+    Combination combination = Combination(front: [0], back: [1]);
 
     ReviewingCardState stateCard = ReviewingCardState(
         master: id,
@@ -90,7 +90,7 @@ void main() {
   test("should return overdue for cards that reviewing and due before the day",
       () {
     int id = generateId();
-    Combination combination = Combination([0], [1]);
+    Combination combination = Combination(front: [0], back: [1]);
 
     ReviewingCardState stateCard = ReviewingCardState(
         master: id,
@@ -128,7 +128,7 @@ void main() {
     DRState emptyState = DRState.makeEmptyState();
 
     int id = generateId();
-    Combination combination = Combination([0], [1]);
+    Combination combination = Combination(front: [0], back: [1]);
 
     ReviewingCardState dueLater = ReviewingCardState(
         master: id,
@@ -139,7 +139,7 @@ void main() {
         interval: 13.3);
     ReviewingCardState dueNow = ReviewingCardState(
         master: id,
-        combination: Combination([0, 1], [1]),
+        combination: Combination(front: [0, 1], back: [1]),
         lapses: 0,
         lastReviewed: Dates.laterTmrw,
         factor: 1000,
@@ -147,7 +147,7 @@ void main() {
 
     ReviewingCardState overDue = ReviewingCardState(
         master: id,
-        combination: Combination([1], [0]),
+        combination: Combination(front: [1], back: [0]),
         lapses: 0,
         lastReviewed: Dates.today,
         factor: 1000,
@@ -155,14 +155,14 @@ void main() {
 
     LearningCardState learning = LearningCardState(
       master: id,
-      combination: Combination([1, 0], [0]),
+      combination: Combination(front: [1, 0], back: [0]),
       lastReviewed: Dates.today,
       consecutiveCorrect: 0,
     );
 
     LapsedCardState lapsed = LapsedCardState(
         master: id,
-        combination: Combination([1, 0], [0, 1]),
+        combination: Combination(front: [1, 0], back: [0, 1]),
         lastReviewed: Dates.today,
         consecutiveCorrect: 0,
         factor: 1000,
@@ -201,7 +201,7 @@ void main() {
     DRState emptyState = DRState.makeEmptyState();
 
     int id = generateId();
-    Combination combination = Combination([0], [1]);
+    Combination combination = Combination(front: [0], back: [1]);
 
     ReviewingCardState dueLater = ReviewingCardState(
         master: id,
@@ -212,7 +212,7 @@ void main() {
         interval: 13.3);
     ReviewingCardState dueNow = ReviewingCardState(
         master: id,
-        combination: Combination([0, 1], [1]),
+        combination: Combination(front: [0, 1], back: [1]),
         lapses: 0,
         lastReviewed: Dates.laterTmrw,
         factor: 1000,
@@ -220,7 +220,7 @@ void main() {
 
     ReviewingCardState overDue = ReviewingCardState(
         master: id,
-        combination: Combination([1], [0]),
+        combination: Combination(front: [1], back: [0]),
         lapses: 0,
         lastReviewed: Dates.today,
         factor: 1000,
@@ -228,14 +228,14 @@ void main() {
 
     LearningCardState learning = LearningCardState(
       master: id,
-      combination: Combination([1, 0], [0]),
+      combination: Combination(front: [1, 0], back: [0]),
       lastReviewed: Dates.today,
       consecutiveCorrect: 0,
     );
 
     LapsedCardState lapsed = LapsedCardState(
         master: id,
-        combination: Combination([1, 0], [0, 1]),
+        combination: Combination(front: [1, 0], back: [0, 1]),
         lastReviewed: Dates.laterTmrw,
         consecutiveCorrect: 0,
         factor: 1000,
