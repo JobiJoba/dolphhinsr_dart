@@ -1,3 +1,7 @@
+## [1.0.6] - 13/05/2019
+- Merged PR that make the code more readable and add optional parameters
+- Update Dart 2.3.0 
+
 ## [1.0.5] - 02/04/2019
 
 - Fix issue when selecting hard multiple time

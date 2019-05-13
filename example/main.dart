@@ -1,14 +1,6 @@
 import 'package:dolphinsr_dart/dolphinsr_dart.dart';
 
 void main() {
-  // List<Combination> thaiCombination = [
-  //   Combination(front:[0], back:[1]),
-  //   Combination(front:[1], back:[0]),
-  // ];
-  //List<Master> masters = [];
-  //masters.add();
-  // masters.add();
-
   List<Review> reviews = [];
 
   DolphinSR dolphin = new DolphinSR();

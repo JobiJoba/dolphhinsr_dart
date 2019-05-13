@@ -31,7 +31,7 @@ Add that to your pubspec.yaml
 
 ```yaml
 dependencies:
- dolphinsr_dart: "^1.0.0"
+ dolphinsr_dart: "^1.0.6"
 ```
 
 ## Quick Start
@@ -39,33 +39,41 @@ dependencies:
 See [example/main.dart](https://github.com/JobiJoba/dolphhinsr_dart/blob/master/example/main.dart)
 
 ```dart
-List<Combination> thaiCombination = [
-    Combination([0], [1]),
-    Combination([1], [0]),
-  ];
-  List<Master> masters = [];
-  masters.add(Master(1, ['คน', 'person'], thaiCombination));
-  masters.add(Master(2, ['คบ', 'To date'], thaiCombination));
-
-  List<Review> reviews = [];
+List<Review> reviews = [];
 
   DolphinSR dolphin = new DolphinSR();
 
-  dolphin.addMasters(masters);
+  dolphin.addMasters([
+    Master(id: 1, fields: [
+      'คน',
+      'person'
+    ], combinations: [
+      Combination(front: [0], back: [1]),
+      Combination(front: [1], back: [0]),
+    ]),
+    Master(id: 2, fields: [
+      'คบ',
+      'To date'
+    ], combinations: [
+      Combination(front: [0], back: [1]),
+      Combination(front: [1], back: [0]),
+    ])
+  ]);
   dolphin.addReviews(reviews);
 
   var stats =
       dolphin.summary(); // => { due: 0, later: 0, learning: 2, overdue: 0 }
   print("${stats.due}-${stats.later}-${stats.learning}-${stats.overdue}");
 
-  Card card = dolphin.nextCard();
+  DRCard card = dolphin.nextCard();
   print(
       "${card.back}-${card.front}-${card.combination.back}-${card.combination.front}");
-  Review review =
-      Review(card.master, card.combination, DateTime.now(), Rating.Easy);
+  Review review = Review(
+      master: card.master,
+      combination: card.combination,
+      ts: DateTime.now(),
+      rating: Rating.Hard);
   dolphin.addReviews([review]);
-
-  card = dolphin.nextCard();
 
 ```
 
