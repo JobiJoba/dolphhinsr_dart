@@ -28,7 +28,6 @@ class DolphinSR {
         throw Exception("Already added masters");
       }
     }
-
     master.combinations.forEach(
         (Combination combination) => foreachMaster(combination, master));
 
@@ -40,6 +39,10 @@ class DolphinSR {
 
     _state.cardStates[cardId.uniqueId] =
         CardState.makeInitialCardState(id: master.id, combination: combination);
+  }
+
+  bool cardExistInMaster(int id) {
+    return _masters.containsKey(id);
   }
 
   addMasters(List<Master> masters) {

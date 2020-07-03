@@ -34,7 +34,7 @@ class Utils {
       var interval = prev.consecutiveCorrect > 0
           ? INITIAL_DAYS_WITHOUT_JUMP
           : INITIAL_DAYS_WITH_JUMP;
-
+      print("come here ${prev.consecutiveCorrect} $interval");
       return ReviewingCardState(
           master: prev.master,
           combination: prev.combination,
@@ -49,6 +49,8 @@ class Utils {
           consecutiveCorrect: 0,
           lastReviewed: ts);
     } else if ((rating == Rating.Good) && prev.consecutiveCorrect < 1) {
+      print("come here omg ${prev.consecutiveCorrect}");
+
       return LearningCardState(
           master: prev.master,
           combination: prev.combination,
@@ -184,13 +186,13 @@ class Utils {
           lastReviewed: ts);
     }
 
-    double factorAdj = (rating == Rating.Hard
+    num factorAdj = (rating == Rating.Hard
         ? -150
         : rating == Rating.Good ? 0 : rating == Rating.Easy ? 150 : double.nan);
 
-    double daysLate = calculateDaysLate(prev, ts);
+    num daysLate = calculateDaysLate(prev, ts);
 
-    double fact = rating == Rating.Hard
+    num fact = rating == Rating.Hard
         ? (prev.interval + (daysLate / 4)) * 1.2
         : rating == Rating.Good
             ? ((prev.interval + (daysLate / 2)) * prev.factor) / 1000
@@ -198,7 +200,7 @@ class Utils {
                 ? (((prev.interval + daysLate) * prev.factor) / 1000) *
                     EASY_BONUS
                 : double.nan;
-    double ival = constrainWithin(prev.interval + 1, MAX_INTERVAL, fact);
+    num ival = constrainWithin(prev.interval + 1, MAX_INTERVAL, fact);
 
     return ReviewingCardState(
         master: prev.master,
