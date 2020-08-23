@@ -28,7 +28,7 @@ body {
 body {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  -webkit-overflow-scrolling: touch;
 }
 
 header {
@@ -88,7 +88,6 @@ main {
 ::-webkit-scrollbar-thumb{ background-color: #CCC; }
 ::-webkit-scrollbar-thumb:hover{ background-color: #CCC; }
 ::-webkit-scrollbar{ width: 4px; }
-::-webkit-overflow-scrolling: touch;
 
 .main-content::-webkit-scrollbar{ width: 8px; }
 
@@ -382,6 +381,12 @@ dl dt.callable .name {
   display: unset;
 }
 
+.parameter-list {
+  display: table-cell;
+  margin-left: 10px;
+  list-style-type: none;
+}
+
 .signature {
   color: #727272;
 }
@@ -452,6 +457,22 @@ dl dt.callable .name {
 }
 
 h1 .category {
+  vertical-align: middle;
+}
+
+.feature {
+  display: inline-block;
+  background: white;
+  border: 1px solid #0175c2;
+  border-radius: 20px;
+  color: #0175c2;
+
+  font-size: 12px;
+  padding: 1px 6px;
+  margin: 0 8px 0 0;
+}
+
+h1 .feature {
   vertical-align: middle;
 }
 
@@ -564,6 +585,7 @@ footer a, footer a:hover {
   background-image: none;
   content: "";
   margin: 0;
+  padding: 0;
 }
 
 /* The slug line under a declaration for things like "const", "read-only", etc. */

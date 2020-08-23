@@ -1,3 +1,7 @@
+## [1.0.8] - 24/09/2020
+- Removed the last new
+- Update doc
+
 ## [1.0.7] - 24/09/2020
 - Merged PR which put the test dependencies to dev_dep
 - Update Dart 2.9

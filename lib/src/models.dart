@@ -137,7 +137,7 @@ class LapsedCardState extends CardState {
 class DRState {
   Map<String, CardState> cardStates;
   static makeEmptyState() {
-    return DRState(new Map());
+    return DRState(Map());
   }
 
   DRState(this.cardStates);

@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/JobiJoba/dolphhinsr_dart.svg?branch=master)](https://travis-ci.org/JobiJoba/dolphhinsr_dart.svg#)
+[![Build Status](https://travis-ci.org/JobiJoba/dolphhinsr_dart.svg?branch=master)](https://travis-ci.org/JobiJoba/dolphhinsr_dart#)
 
 
 # DolphinSR_Dart
