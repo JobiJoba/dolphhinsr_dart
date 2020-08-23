@@ -15,7 +15,7 @@ class DolphinSR {
 
   DolphinSR({this.currentDateGetter}) {
     _state = DRState.makeEmptyState();
-    _masters = new Map();
+    _masters = Map();
 
     if (currentDateGetter == null) {
       currentDateGetter = DateTime.now();

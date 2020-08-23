@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/JobiJoba/dolphhinsr_dart.svg?branch=master)](https://travis-ci.org/valgene/valgene-cli#)
+[![Build Status](https://travis-ci.org/JobiJoba/dolphhinsr_dart.svg?branch=master)](https://travis-ci.org/JobiJoba/dolphhinsr_dart.svg#)
 
 
 # DolphinSR_Dart

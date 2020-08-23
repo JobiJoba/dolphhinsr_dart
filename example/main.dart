@@ -3,7 +3,7 @@ import 'package:dolphinsr_dart/dolphinsr_dart.dart';
 void main() {
   List<Review> reviews = [];
 
-  DolphinSR dolphin = new DolphinSR();
+  DolphinSR dolphin = DolphinSR();
 
   dolphin.addMasters([
     Master(id: 1, fields: [

@@ -1,3 +1,8 @@
+## [1.0.7] - 24/09/2020
+- Merged PR which put the test dependencies to dev_dep
+- Update Dart 2.9
+- Remove new keyword from the whole project
+
 ## [1.0.6] - 13/05/2019
 - Merged PR that make the code more readable and add optional parameters
 - Update Dart 2.3.0 

@@ -21,7 +21,6 @@ class Utils {
   }
 
 // constants from Anki defaults
-// TODO(April 1, 2017) investigate rationales, consider changing them
   static final double INITIAL_FACTOR = 2500;
   static final double INITIAL_DAYS_WITHOUT_JUMP = 4;
   static final double INITIAL_DAYS_WITH_JUMP = 1;
@@ -61,7 +60,7 @@ class Utils {
 
   static final int EASY_BONUS = 2;
   static final int MAX_INTERVAL = 365;
-  static final int MIN_FACTOR = 0; // TODO
+  static final int MIN_FACTOR = 0;
   static final int MAX_FACTOR = 2147483647;
   static constrainWithin(double min, int max, double n) {
     return math.max(math.min(n, max), min);
@@ -123,7 +122,6 @@ class Utils {
           if (a == b) {
             throw Exception("comparing duplicate id: $a");
           }
-          //TODO CHECK THAT
           return a.id > b.id ? 0 : 1;
         });
         return first[0];
