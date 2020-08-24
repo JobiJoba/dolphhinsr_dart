@@ -1,30 +1,31 @@
 import 'package:dolphinsr_dart/dolphinsr_dart.dart';
 
 void main() {
-  List<Review> reviews = [];
+  final List<Review> reviews = <Review>[];
 
-  DolphinSR dolphin = DolphinSR();
+  final DolphinSR dolphin = DolphinSR();
 
-  dolphin.addMasters([
-    Master(id: 1, fields: [
+  dolphin.addMasters(<Master>[
+    Master(id: 1, fields: <String>[
       'คน',
       'person'
-    ], combinations: [
-      Combination(front: [0], back: [1]),
-      Combination(front: [1], back: [0]),
+    ], combinations: <Combination>[
+      Combination(front: <int>[0], back: <int>[1]),
+      Combination(front: <int>[1], back: <int>[0]),
     ]),
-    Master(id: 2, fields: [
+    Master(id: 2, fields: <String>[
       'คบ',
       'To date'
-    ], combinations: [
-      Combination(front: [0], back: [1]),
-      Combination(front: [1], back: [0]),
+    ], combinations: <Combination>[
+      Combination(front: <int>[0], back: <int>[1]),
+      Combination(front: <int>[1], back: <int>[0]),
     ])
   ]);
   dolphin.addReviews(reviews);
 
-  var stats =
+  SummaryStatics stats =
       dolphin.summary(); // => { due: 0, later: 0, learning: 2, overdue: 0 }
+
   print("${stats.due}-${stats.later}-${stats.learning}-${stats.overdue}");
 
   DRCard card = dolphin.nextCard();
@@ -35,7 +36,7 @@ void main() {
       combination: card.combination,
       ts: DateTime.now(),
       rating: Rating.Hard);
-  dolphin.addReviews([review]);
+  dolphin.addReviews(<Review>[review]);
 
   card = dolphin.nextCard();
   print(
@@ -46,7 +47,7 @@ void main() {
       combination: card.combination,
       ts: DateTime.now(),
       rating: Rating.Hard);
-  dolphin.addReviews([review]);
+  dolphin.addReviews(<Review>[review]);
 
   stats =
       dolphin.summary(); // => { due: 0, later: 0, learning: 10, overdue: 0 }
@@ -60,7 +61,7 @@ void main() {
       combination: card.combination,
       ts: DateTime.now(),
       rating: Rating.Hard);
-  dolphin.addReviews([review]);
+  dolphin.addReviews(<Review>[review]);
 
   stats =
       dolphin.summary(); // => { due: 0, later: 0, learning: 10, overdue: 0 }
@@ -74,7 +75,7 @@ void main() {
       combination: card.combination,
       ts: DateTime.now(),
       rating: Rating.Hard);
-  dolphin.addReviews([review]);
+  dolphin.addReviews(<Review>[review]);
 
   stats =
       dolphin.summary(); // => { due: 0, later: 0, learning: 10, overdue: 0 }
@@ -88,7 +89,7 @@ void main() {
       combination: card.combination,
       ts: DateTime.now(),
       rating: Rating.Hard);
-  dolphin.addReviews([review]);
+  dolphin.addReviews(<Review>[review]);
 
   stats =
       dolphin.summary(); // => { due: 0, later: 0, learning: 10, overdue: 0 }
@@ -102,7 +103,7 @@ void main() {
       combination: card.combination,
       ts: DateTime.now(),
       rating: Rating.Hard);
-  dolphin.addReviews([review]);
+  dolphin.addReviews(<Review>[review]);
 
   stats =
       dolphin.summary(); // => { due: 0, later: 0, learning: 10, overdue: 0 }
@@ -116,7 +117,7 @@ void main() {
       combination: card.combination,
       ts: DateTime.now(),
       rating: Rating.Hard);
-  dolphin.addReviews([review]);
+  dolphin.addReviews(<Review>[review]);
 
   stats =
       dolphin.summary(); // => { due: 0, later: 0, learning: 10, overdue: 0 }
@@ -130,7 +131,7 @@ void main() {
       combination: card.combination,
       ts: DateTime.now(),
       rating: Rating.Hard);
-  dolphin.addReviews([review]);
+  dolphin.addReviews(<Review>[review]);
 
   stats =
       dolphin.summary(); // => { due: 0, later: 0, learning: 10, overdue: 0 }
@@ -144,7 +145,7 @@ void main() {
       combination: card.combination,
       ts: DateTime.now(),
       rating: Rating.Hard);
-  dolphin.addReviews([review]);
+  dolphin.addReviews(<Review>[review]);
 
   stats =
       dolphin.summary(); // => { due: 0, later: 0, learning: 10, overdue: 0 }

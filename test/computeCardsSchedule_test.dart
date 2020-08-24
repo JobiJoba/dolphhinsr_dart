@@ -1,8 +1,8 @@
+import 'dart:math' as math;
 import 'package:dolphinsr_dart/src/models.dart';
 import 'package:dolphinsr_dart/src/utils.dart';
 import "package:test/test.dart";
 
-import 'dart:math' as math;
 import "dates.dart";
 
 final master = generateId();
@@ -21,12 +21,12 @@ Review makeReview(DateTime ts) {
 }
 
 final List<Review> reviews = [
-  Dates.today,
-  Dates.todayAt3AM,
-  Dates.laterToday,
-  Dates.laterTmrw,
-  Dates.laterInTwoDays,
-  Dates.laterInFourDays,
+  today,
+  todayAt3AM,
+  laterToday,
+  laterTmrw,
+  laterInTwoDays,
+  laterInFourDays,
 ].map(makeReview).toList();
 
 void main() {
@@ -37,13 +37,13 @@ void main() {
         master: id,
         combination: combination,
         lapses: 0,
-        lastReviewed: Dates.today,
+        lastReviewed: today,
         factor: 1000,
         interval: 13.3);
 
-    DateTime due = Utils.calculateDueDate(stateCard);
+    DateTime due = calculateDueDate(stateCard);
 
-    DateTime expectedDate = Dates.todayAt3AM.add(Duration(days: 14));
+    DateTime expectedDate = todayAt3AM.add(Duration(days: 14));
     expect(due, equals(expectedDate));
   });
   test("should return later for cards that are reviewing and not yet due", () {
@@ -54,12 +54,11 @@ void main() {
         master: id,
         combination: combination,
         lapses: 0,
-        lastReviewed: Dates.today,
+        lastReviewed: today,
         factor: 1000,
         interval: 13.3);
 
-    String computeSchedule =
-        Utils.computeScheduleFromCardState(stateCard, Dates.laterTmrw);
+    String computeSchedule = computeScheduleFromCardState(stateCard, laterTmrw);
 
     expect(computeSchedule, equals("later"));
   });
@@ -73,17 +72,17 @@ void main() {
         master: id,
         combination: combination,
         lapses: 0,
-        lastReviewed: Dates.today,
+        lastReviewed: today,
         factor: 1000,
         interval: 13.3);
 
-    String computeSchedule = Utils.computeScheduleFromCardState(
-        stateCard, Dates.todayAt3AM.add(Duration(days: 14)));
+    String computeSchedule = computeScheduleFromCardState(
+        stateCard, todayAt3AM.add(Duration(days: 14)));
 
     expect(computeSchedule, equals("due"));
 
-    computeSchedule = Utils.computeScheduleFromCardState(
-        stateCard, Dates.laterToday.add(Duration(days: 14)));
+    computeSchedule = computeScheduleFromCardState(
+        stateCard, laterToday.add(Duration(days: 14)));
     expect(computeSchedule, equals("due"));
   });
 
@@ -96,36 +95,32 @@ void main() {
         master: id,
         combination: combination,
         lapses: 0,
-        lastReviewed: Dates.today,
+        lastReviewed: today,
         factor: 1000,
         interval: 13.3);
 
-    String computeSchedule = Utils.computeScheduleFromCardState(
-        stateCard, Dates.todayAt3AM.add(Duration(days: 15)));
+    String computeSchedule = computeScheduleFromCardState(
+        stateCard, todayAt3AM.add(Duration(days: 15)));
 
     expect(computeSchedule, equals("overdue"));
 
-    computeSchedule = Utils.computeScheduleFromCardState(
-        stateCard, Dates.laterToday.add(Duration(days: 15)));
+    computeSchedule = computeScheduleFromCardState(
+        stateCard, laterToday.add(Duration(days: 15)));
     expect(computeSchedule, equals("overdue"));
   });
 
   test("should return an empty schedule when passed an empty state", () {
-    DRState emptyState = DRState.makeEmptyState();
+    DRState emptyState = makeEmptyState();
 
-    expect(Utils.computeCardsSchedule(emptyState, Dates.today).learning.length,
-        equals(0));
-    expect(Utils.computeCardsSchedule(emptyState, Dates.today).later.length,
-        equals(0));
-    expect(Utils.computeCardsSchedule(emptyState, Dates.today).due.length,
-        equals(0));
-    expect(Utils.computeCardsSchedule(emptyState, Dates.today).overdue.length,
-        equals(0));
+    expect(computeCardsSchedule(emptyState, today).learning.length, equals(0));
+    expect(computeCardsSchedule(emptyState, today).later.length, equals(0));
+    expect(computeCardsSchedule(emptyState, today).due.length, equals(0));
+    expect(computeCardsSchedule(emptyState, today).overdue.length, equals(0));
   });
 
   test("should a sorted list of cards when passed cards in multiple states",
       () {
-    DRState emptyState = DRState.makeEmptyState();
+    DRState emptyState = makeEmptyState();
 
     int id = generateId();
     Combination combination = Combination(front: [0], back: [1]);
@@ -134,14 +129,14 @@ void main() {
         master: id,
         combination: combination,
         lapses: 0,
-        lastReviewed: Dates.laterTmrw,
+        lastReviewed: laterTmrw,
         factor: 1000,
         interval: 13.3);
     ReviewingCardState dueNow = ReviewingCardState(
         master: id,
         combination: Combination(front: [0, 1], back: [1]),
         lapses: 0,
-        lastReviewed: Dates.laterTmrw,
+        lastReviewed: laterTmrw,
         factor: 1000,
         interval: 0);
 
@@ -149,56 +144,52 @@ void main() {
         master: id,
         combination: Combination(front: [1], back: [0]),
         lapses: 0,
-        lastReviewed: Dates.today,
+        lastReviewed: today,
         factor: 1000,
         interval: 0);
 
     LearningCardState learning = LearningCardState(
       master: id,
       combination: Combination(front: [1, 0], back: [0]),
-      lastReviewed: Dates.today,
+      lastReviewed: today,
       consecutiveCorrect: 0,
     );
 
     LapsedCardState lapsed = LapsedCardState(
         master: id,
         combination: Combination(front: [1, 0], back: [0, 1]),
-        lastReviewed: Dates.today,
+        lastReviewed: today,
         consecutiveCorrect: 0,
         factor: 1000,
         interval: 0,
         lapses: 1);
 
     [dueLater, dueNow, overDue, learning, lapsed].forEach((cardState) {
-      emptyState.cardStates[Utils.getCardIdFromCardState(cardState)] =
-          cardState;
+      emptyState.cardStates[getCardIdFromCardState(cardState)] = cardState;
     });
 
-    CardsSchedule s = Utils.computeCardsSchedule(emptyState, Dates.laterTmrw);
+    CardsSchedule s = computeCardsSchedule(emptyState, laterTmrw);
 
     expect(s.learning.length, equals(2));
-    expect(
-        s.learning[1].uniqueId, equals(Utils.getCardIdFromCardState(lapsed)));
-    expect(
-        s.learning[0].uniqueId, equals(Utils.getCardIdFromCardState(learning)));
-    expect(s.later[0].uniqueId, equals(Utils.getCardIdFromCardState(dueLater)));
-    expect(s.due[0].uniqueId, equals(Utils.getCardIdFromCardState(dueNow)));
-    expect(
-        s.overdue[0].uniqueId, equals(Utils.getCardIdFromCardState(overDue)));
+    expect(s.learning[1].uniqueId, equals(getCardIdFromCardState(lapsed)));
+    expect(s.learning[0].uniqueId, equals(getCardIdFromCardState(learning)));
+    expect(s.later[0].uniqueId, equals(getCardIdFromCardState(dueLater)));
+    expect(s.due[0].uniqueId, equals(getCardIdFromCardState(dueNow)));
+    expect(s.overdue[0].uniqueId, equals(getCardIdFromCardState(overDue)));
   });
 
   test("PickMostDue should return null when passed an empty schedule and state",
       () {
-    DRState emptyState = DRState.makeEmptyState();
-    CardsSchedule s = Utils.computeCardsSchedule(emptyState, Dates.today);
-    var pickMostDue = Utils.pickMostDue(s, emptyState);
-    expect(pickMostDue, isNull);
+    DRState emptyState = makeEmptyState();
+    CardsSchedule s = computeCardsSchedule(emptyState, today);
+    final pick = pickMostDue(s, emptyState);
+    expect(pick, isNull);
   });
 
   test(
       "PickMostDue should return the learning card reviewed most recently if two learning cards are in the deck",
       () {
-    DRState emptyState = DRState.makeEmptyState();
+    DRState emptyState = makeEmptyState();
 
     int id = generateId();
     Combination combination = Combination(front: [0], back: [1]);
@@ -207,14 +198,14 @@ void main() {
         master: id,
         combination: combination,
         lapses: 0,
-        lastReviewed: Dates.laterTmrw,
+        lastReviewed: laterTmrw,
         factor: 1000,
         interval: 13.3);
     ReviewingCardState dueNow = ReviewingCardState(
         master: id,
         combination: Combination(front: [0, 1], back: [1]),
         lapses: 0,
-        lastReviewed: Dates.laterTmrw,
+        lastReviewed: laterTmrw,
         factor: 1000,
         interval: 0);
 
@@ -222,34 +213,32 @@ void main() {
         master: id,
         combination: Combination(front: [1], back: [0]),
         lapses: 0,
-        lastReviewed: Dates.today,
+        lastReviewed: today,
         factor: 1000,
         interval: 0);
 
     LearningCardState learning = LearningCardState(
       master: id,
       combination: Combination(front: [1, 0], back: [0]),
-      lastReviewed: Dates.today,
+      lastReviewed: today,
       consecutiveCorrect: 0,
     );
 
     LapsedCardState lapsed = LapsedCardState(
         master: id,
         combination: Combination(front: [1, 0], back: [0, 1]),
-        lastReviewed: Dates.laterTmrw,
+        lastReviewed: laterTmrw,
         consecutiveCorrect: 0,
         factor: 1000,
         interval: 0,
         lapses: 1);
 
     [dueLater, dueNow, overDue, learning, lapsed].forEach((cardState) {
-      emptyState.cardStates[Utils.getCardIdFromCardState(cardState)] =
-          cardState;
+      emptyState.cardStates[getCardIdFromCardState(cardState)] = cardState;
     });
 
-    CardsSchedule s = Utils.computeCardsSchedule(emptyState, Dates.laterTmrw);
-    CardId pickMostDue = Utils.pickMostDue(s, emptyState);
-    expect(
-        pickMostDue.uniqueId, equals(Utils.getCardIdFromCardState(learning)));
+    CardsSchedule s = computeCardsSchedule(emptyState, laterTmrw);
+    CardId pick = pickMostDue(s, emptyState);
+    expect(pick.uniqueId, equals(getCardIdFromCardState(learning)));
   });
 }

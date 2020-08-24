@@ -31,7 +31,7 @@ Add that to your pubspec.yaml
 
 ```yaml
 dependencies:
- dolphinsr_dart: "^1.0.6"
+ dolphinsr_dart: "^1.0.9"
 ```
 
 ## Quick Start

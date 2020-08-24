@@ -1,3 +1,8 @@
+## [1.0.9] - 24/09/2020
+- Rewrite the code to be more "Dart" way; remove static for Utility class (Still in progress)
+- Add depedencies on Equatable to check equality instead of manually overriding.
+- Added Analysis_options.yaml for better code quality
+
 ## [1.0.8] - 24/09/2020
 - Removed the last new
 - Update doc

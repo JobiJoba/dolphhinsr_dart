@@ -1,278 +1,290 @@
-import 'package:dolphinsr_dart/src/models.dart';
 import 'dart:math' as math;
+import './models.dart';
 
-class Utils {
-  static List<Review> addReview(List<Review> reviews, Review review) {
-    if (reviews.isEmpty) {
-      return [review];
-    }
-    var i = reviews.length - 1;
-    for (; i >= 0; i -= 1) {
-      if (reviews[i].ts.isBefore(review.ts) ||
-          reviews[i].ts.isAtSameMomentAs(review.ts)) {
-        break;
-      }
-    }
-
-    List<Review> newReviews = reviews.sublist(0);
-    newReviews.insert(i + 1, review);
-
-    return newReviews;
+List<Review> addReview(List<Review> reviews, Review review) {
+  if (reviews.isEmpty) {
+    return <Review>[review];
   }
+  int i = reviews.length - 1;
+  for (; i >= 0; i -= 1) {
+    if (reviews[i].ts.isBefore(review.ts) ||
+        reviews[i].ts.isAtSameMomentAs(review.ts)) {
+      break;
+    }
+  }
+
+  final List<Review> newReviews = reviews.sublist(0);
+  newReviews.insert(i + 1, review);
+
+  return newReviews;
+}
 
 // constants from Anki defaults
-  static final double INITIAL_FACTOR = 2500;
-  static final double INITIAL_DAYS_WITHOUT_JUMP = 4;
-  static final double INITIAL_DAYS_WITH_JUMP = 1;
+const double INITIAL_FACTOR = 2500;
+const double INITIAL_DAYS_WITHOUT_JUMP = 4;
+const double INITIAL_DAYS_WITH_JUMP = 1;
 
-  static applyToLearningCardState(
-      LearningCardState prev, DateTime ts, Rating rating) {
-    if (rating == Rating.Easy ||
-        (rating == Rating.Easy || rating == Rating.Good) &&
-            prev.consecutiveCorrect > 0) {
-      var interval = prev.consecutiveCorrect > 0
-          ? INITIAL_DAYS_WITHOUT_JUMP
-          : INITIAL_DAYS_WITH_JUMP;
-      print("come here ${prev.consecutiveCorrect} $interval");
-      return ReviewingCardState(
-          master: prev.master,
-          combination: prev.combination,
-          factor: INITIAL_FACTOR,
-          lapses: 0,
-          interval: interval.toDouble(),
-          lastReviewed: ts);
-    } else if (rating == Rating.Again || rating == Rating.Hard) {
-      return LearningCardState(
-          master: prev.master,
-          combination: prev.combination,
-          consecutiveCorrect: 0,
-          lastReviewed: ts);
-    } else if ((rating == Rating.Good) && prev.consecutiveCorrect < 1) {
-      print("come here omg ${prev.consecutiveCorrect}");
+const int EASY_BONUS = 2;
+const int MAX_INTERVAL = 365;
+const int MIN_FACTOR = 0;
+const int MAX_FACTOR = 2147483647;
 
-      return LearningCardState(
-          master: prev.master,
-          combination: prev.combination,
-          consecutiveCorrect: prev.consecutiveCorrect + 1,
-          lastReviewed: ts);
-    }
-  }
-
-  static final int EASY_BONUS = 2;
-  static final int MAX_INTERVAL = 365;
-  static final int MIN_FACTOR = 0;
-  static final int MAX_FACTOR = 2147483647;
-  static constrainWithin(double min, int max, double n) {
-    return math.max(math.min(n, max), min);
-  }
-
-  static DateTime calculateDueDate(CardState state) {
-    DateTime result = state.lastReviewed;
-
-    var newHour = 3;
-    var newDay = result.day + state.interval.ceil();
-    DateTime newResult = result.toLocal();
-    newResult = DateTime(result.year, result.month, newDay, newHour,
-        result.minute, result.second, result.millisecond, result.microsecond);
-
-    return newResult;
-  }
-
-  static computeScheduleFromCardState(CardState state, DateTime now) {
-    if (state.mode == "lapsed" || state.mode == "learning") {
-      return "learning";
-    } else if (state.mode == "reviewing") {
-      var diff = dateDiffInDays(calculateDueDate(state), now);
-      if (diff < 0) {
-        return "later";
-      } else if (diff >= 0 && diff < 1) {
-        return "due";
-      } else if (diff >= 1) {
-        return "overdue";
-      }
-    }
-
-    throw Exception("Issue with mode and calculation of a cardState");
-  }
-
-  static CardId pickMostDue(CardsSchedule s, DRState state) {
-    List<String> scheduleKey = ["learning", "overdue", "due"];
-    for (int i = 0; i < scheduleKey.length; i++) {
-      String key = scheduleKey[i];
-      List<CardId> propertyValue = s.getPropertyValue(key);
-      if (propertyValue.isNotEmpty) {
-        List<CardId> first = propertyValue.sublist(0);
-
-        first.sort((CardId a, CardId b) {
-          CardState cardA = state.cardStates[a.uniqueId];
-          CardState cardB = state.cardStates[b.uniqueId];
-
-          var reviewDiff = (cardA.lastReviewed == null &&
-                  cardB.lastReviewed != null)
-              ? 1
-              : (cardB.lastReviewed == null && cardA.lastReviewed != null)
-                  ? -1
-                  : (cardA.lastReviewed == null && cardB.lastReviewed == null)
-                      ? 0
-                      : (cardB.lastReviewed).compareTo(cardA.lastReviewed);
-
-          if (reviewDiff != 0) {
-            return -reviewDiff;
-          }
-          if (a == b) {
-            throw Exception("comparing duplicate id: $a");
-          }
-          return a.id > b.id ? 0 : 1;
-        });
-        return first[0];
-      }
-    }
-    return null;
-  }
-
-  static CardsSchedule computeCardsSchedule(DRState state, DateTime now) {
-    CardsSchedule s =
-        CardsSchedule(later: [], due: [], overdue: [], learning: []);
-
-    state.cardStates
-        .forEach((id, value) => forEachCalculSchedule(value, now, s));
-
-    return s;
-  }
-
-  static forEachCalculSchedule(
-      CardState cardState, DateTime now, CardsSchedule s) {
-    String calculatedSchedule = computeScheduleFromCardState(cardState, now);
-
-    List<CardId> rightSchedule = s.getPropertyValue(calculatedSchedule);
-
-    rightSchedule.add(CardId.fromState(cardState));
-  }
-
-  static double dateDiffInDays(DateTime a, DateTime b) {
-    // adapted from http://stackoverflow.com/a/15289883/251162
-    const MS_PER_DAY = 1000 * 60 * 60 * 24;
-
-    // Disstate the time and time-zone information.
-
-    var utc1 = DateTime.utc(a.year, a.month, a.day);
-
-    var utc2 = DateTime.utc(b.year, b.month, b.day);
-
-    return (utc2.difference(utc1)).inMilliseconds / MS_PER_DAY;
-  }
-
-  static calculateDaysLate(ReviewingCardState state, DateTime actual) {
-    DateTime excpected = calculateDueDate(state);
-
-    double daysLate = dateDiffInDays(actual, excpected);
-
-    return daysLate;
-  }
-
-  static applyToReviewingCardState(
-      ReviewingCardState prev, DateTime ts, Rating rating) {
-    if (rating == Rating.Again) {
-      return LapsedCardState(
-          master: prev.master,
-          combination: prev.combination,
-          consecutiveCorrect: 0,
-          factor: constrainWithin(
-              MIN_FACTOR.toDouble(), MAX_FACTOR, prev.factor.toDouble() - 200),
-          lapses: prev.lapses + 1,
-          interval: prev.interval,
-          lastReviewed: ts);
-    }
-
-    num factorAdj = (rating == Rating.Hard
-        ? -150
-        : rating == Rating.Good ? 0 : rating == Rating.Easy ? 150 : double.nan);
-
-    num daysLate = calculateDaysLate(prev, ts);
-
-    num fact = rating == Rating.Hard
-        ? (prev.interval + (daysLate / 4)) * 1.2
-        : rating == Rating.Good
-            ? ((prev.interval + (daysLate / 2)) * prev.factor) / 1000
-            : rating == Rating.Easy
-                ? (((prev.interval + daysLate) * prev.factor) / 1000) *
-                    EASY_BONUS
-                : double.nan;
-    num ival = constrainWithin(prev.interval + 1, MAX_INTERVAL, fact);
-
+CardState applyToLearningCardState(
+    LearningCardState prev, DateTime ts, Rating rating) {
+  if (rating == Rating.Easy ||
+      (rating == Rating.Easy || rating == Rating.Good) &&
+          prev.consecutiveCorrect > 0) {
+    final double interval = prev.consecutiveCorrect > 0
+        ? INITIAL_DAYS_WITHOUT_JUMP
+        : INITIAL_DAYS_WITH_JUMP;
     return ReviewingCardState(
         master: prev.master,
         combination: prev.combination,
-        factor: constrainWithin(
-            MIN_FACTOR.toDouble(), MAX_FACTOR, prev.factor + factorAdj),
-        lapses: prev.lapses,
-        interval: ival,
+        factor: INITIAL_FACTOR,
+        lapses: 0,
+        interval: interval.toDouble(),
+        lastReviewed: ts);
+  } else if (rating == Rating.Again || rating == Rating.Hard) {
+    return LearningCardState(
+        master: prev.master,
+        combination: prev.combination,
+        consecutiveCorrect: 0,
+        lastReviewed: ts);
+  } else if ((rating == Rating.Good) && prev.consecutiveCorrect < 1) {
+    return LearningCardState(
+        master: prev.master,
+        combination: prev.combination,
+        consecutiveCorrect: prev.consecutiveCorrect + 1,
         lastReviewed: ts);
   }
 
-  static applyToLapsedCardState(
-      LapsedCardState prev, DateTime ts, Rating rating) {
-    if (rating == Rating.Easy ||
-        ((rating == Rating.Easy || rating == Rating.Good) &&
-            prev.consecutiveCorrect > 0)) {
-      return ReviewingCardState(
-        master: prev.master,
-        combination: prev.combination,
-        factor: prev.factor,
-        lapses: prev.lapses,
-        interval: prev.consecutiveCorrect > 0
-            ? INITIAL_DAYS_WITHOUT_JUMP
-            : INITIAL_DAYS_WITH_JUMP,
-        lastReviewed: ts,
-      );
-    }
+  // TODO(JobiJoba): Should return an error state.
+  return null;
+}
 
+num constrainWithin(double min, int max, double n) {
+  return math.max(math.min(n, max), min);
+}
+
+DateTime calculateDueDate(CardState state) {
+  final DateTime result = state.lastReviewed;
+
+  const int newHour = 3;
+  final int newDay = result.day + state.interval.ceil();
+  DateTime newResult = result.toLocal();
+  newResult = DateTime(result.year, result.month, newDay, newHour,
+      result.minute, result.second, result.millisecond, result.microsecond);
+
+  return newResult;
+}
+
+String computeScheduleFromCardState(CardState state, DateTime now) {
+  if (state.mode == "lapsed" || state.mode == "learning") {
+    return "learning";
+  } else if (state.mode == "reviewing") {
+    final double diff = dateDiffInDays(calculateDueDate(state), now);
+    if (diff < 0) {
+      return "later";
+    } else if (diff >= 0 && diff < 1) {
+      return "due";
+    } else if (diff >= 1) {
+      return "overdue";
+    }
+  }
+
+  throw Exception("Issue with mode and calculation of a cardState");
+}
+
+CardId pickMostDue(CardsSchedule s, DRState state) {
+  final List<String> scheduleKey = <String>["learning", "overdue", "due"];
+
+  for (int i = 0; i < scheduleKey.length; i++) {
+    final String key = scheduleKey[i];
+    final List<CardId> propertyValue = s.getPropertyValue(key);
+    if (propertyValue.isNotEmpty) {
+      final List<CardId> first = propertyValue.sublist(0);
+
+      first.sort((CardId a, CardId b) {
+        final CardState cardA = state.cardStates[a.uniqueId];
+        final CardState cardB = state.cardStates[b.uniqueId];
+
+        final int reviewDiff =
+            (cardA.lastReviewed == null && cardB.lastReviewed != null)
+                ? 1
+                : (cardB.lastReviewed == null && cardA.lastReviewed != null)
+                    ? -1
+                    : (cardA.lastReviewed == null && cardB.lastReviewed == null)
+                        ? 0
+                        : (cardB.lastReviewed).compareTo(cardA.lastReviewed);
+
+        if (reviewDiff != 0) {
+          return -reviewDiff;
+        }
+        if (a == b) {
+          throw Exception("comparing duplicate id: $a");
+        }
+        return a.id > b.id ? 0 : 1;
+      });
+      return first[0];
+    }
+  }
+  return null;
+}
+
+CardsSchedule computeCardsSchedule(DRState state, DateTime now) {
+  final CardsSchedule s = CardsSchedule(
+      later: <CardId>[],
+      due: <CardId>[],
+      overdue: <CardId>[],
+      learning: <CardId>[]);
+
+  for (final String cardStateKey in state.cardStates.keys) {
+    final CardState cardState = state.cardStates[cardStateKey];
+
+    final String calculatedSchedule =
+        computeScheduleFromCardState(cardState, now);
+
+    s.getPropertyValue(calculatedSchedule).add(CardId.fromState(cardState));
+  }
+
+  return s;
+}
+
+double dateDiffInDays(DateTime a, DateTime b) {
+  // adapted from http://stackoverflow.com/a/15289883/251162
+  const int MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+  // Disstate the time and time-zone information.
+
+  final DateTime utc1 = DateTime.utc(a.year, a.month, a.day);
+
+  final DateTime utc2 = DateTime.utc(b.year, b.month, b.day);
+
+  return (utc2.difference(utc1)).inMilliseconds / MS_PER_DAY;
+}
+
+double calculateDaysLate(ReviewingCardState state, DateTime actual) {
+  final DateTime excpected = calculateDueDate(state);
+
+  final double daysLate = dateDiffInDays(actual, excpected);
+
+  return daysLate;
+}
+
+CardState applyToReviewingCardState(
+    ReviewingCardState prev, DateTime ts, Rating rating) {
+  if (rating == Rating.Again) {
     return LapsedCardState(
         master: prev.master,
         combination: prev.combination,
-        factor: prev.factor,
-        lapses: prev.lapses,
+        consecutiveCorrect: 0,
+        factor: constrainWithin(
+            MIN_FACTOR.toDouble(), MAX_FACTOR, prev.factor.toDouble() - 200),
+        lapses: prev.lapses + 1,
         interval: prev.interval,
-        lastReviewed: ts,
-        consecutiveCorrect:
-            rating == Rating.Again ? 0 : prev.consecutiveCorrect + 1);
+        lastReviewed: ts);
   }
 
-  static applyToCardState(CardState prev, DateTime ts, Rating rating) {
-    if (prev.lastReviewed != null && prev.lastReviewed.isAfter(ts)) {
-      throw ("Cannot apply review before current lastReviewed");
-    }
+  final num factorAdj = rating == Rating.Hard
+      ? -150
+      : rating == Rating.Good ? 0 : rating == Rating.Easy ? 150 : double.nan;
 
-    if (prev.mode == "learning") {
-      return applyToLearningCardState(prev, ts, rating);
-    } else if (prev.mode == "reviewing") {
-      return applyToReviewingCardState(prev, ts, rating);
-    } else if (prev.mode == "lapsed") {
-      return applyToLapsedCardState(prev, ts, rating);
-    }
+  final num daysLate = calculateDaysLate(prev, ts);
 
-    throw Exception("Card mode is incorrect");
+  final num fact = rating == Rating.Hard
+      ? (prev.interval + (daysLate / 4)) * 1.2
+      : rating == Rating.Good
+          ? ((prev.interval + (daysLate / 2)) * prev.factor) / 1000
+          : rating == Rating.Easy
+              ? (((prev.interval + daysLate) * prev.factor) / 1000) * EASY_BONUS
+              : double.nan;
+  final num ival = constrainWithin(prev.interval + 1, MAX_INTERVAL, fact);
+
+  return ReviewingCardState(
+      master: prev.master,
+      combination: prev.combination,
+      factor: constrainWithin(
+          MIN_FACTOR.toDouble(), MAX_FACTOR, prev.factor + factorAdj),
+      lapses: prev.lapses,
+      interval: ival,
+      lastReviewed: ts);
+}
+
+CardState applyToLapsedCardState(
+    LapsedCardState prev, DateTime ts, Rating rating) {
+  if (rating == Rating.Easy ||
+      ((rating == Rating.Easy || rating == Rating.Good) &&
+          prev.consecutiveCorrect > 0)) {
+    return ReviewingCardState(
+      master: prev.master,
+      combination: prev.combination,
+      factor: prev.factor,
+      lapses: prev.lapses,
+      interval: prev.consecutiveCorrect > 0
+          ? INITIAL_DAYS_WITHOUT_JUMP
+          : INITIAL_DAYS_WITH_JUMP,
+      lastReviewed: ts,
+    );
   }
 
-  static DRState applyReview(DRState prev, Review review) {
-    CardId cardId = CardId.fromReview(review);
+  return LapsedCardState(
+      master: prev.master,
+      combination: prev.combination,
+      factor: prev.factor,
+      lapses: prev.lapses,
+      interval: prev.interval,
+      lastReviewed: ts,
+      consecutiveCorrect:
+          rating == Rating.Again ? 0 : prev.consecutiveCorrect + 1);
+}
 
-    CardState cardState = prev.cardStates[cardId.uniqueId];
-    if (cardState == null) {
-      throw ("applying review to missing card: ${review.master}");
-    }
-    DRState newState = DRState(Map<String, CardState>.from(prev.cardStates));
-
-    newState.cardStates[cardId.uniqueId] =
-        applyToCardState(cardState, review.ts, review.rating);
-
-    return newState;
+CardState applyToCardState(CardState prev, DateTime ts, Rating rating) {
+  if (prev.lastReviewed != null && prev.lastReviewed.isAfter(ts)) {
+    throw "Cannot apply review before current lastReviewed";
   }
 
-  static String getCardIdFromCardState(CardState cardState) {
-    int id = cardState.master;
-    String frontJoin = cardState.combination.front.join(",");
-    String backJoin = cardState.combination.back.join(",");
-    return "$id#$frontJoin@$backJoin";
+  if (prev.mode == "learning") {
+    return applyToLearningCardState(prev, ts, rating);
+  } else if (prev.mode == "reviewing") {
+    return applyToReviewingCardState(prev, ts, rating);
+  } else if (prev.mode == "lapsed") {
+    return applyToLapsedCardState(prev, ts, rating);
   }
+
+  throw Exception("Card mode is incorrect");
+}
+
+DRState applyReview(DRState prev, Review review) {
+  final CardId cardId = CardId.fromReview(review);
+
+  final CardState cardState = prev.cardStates[cardId.uniqueId];
+  if (cardState == null) {
+    throw '''applying review to missing card: ${review.master}''';
+  }
+  final DRState newState =
+      DRState(Map<String, CardState>.from(prev.cardStates));
+
+  newState.cardStates[cardId.uniqueId] =
+      applyToCardState(cardState, review.ts, review.rating);
+
+  return newState;
+}
+
+String getCardIdFromCardState(CardState cardState) {
+  final int id = cardState.master;
+  final String frontJoin = cardState.combination.front.join(",");
+  final String backJoin = cardState.combination.back.join(",");
+  return "$id#$frontJoin@$backJoin";
+}
+
+DRState makeEmptyState() {
+  return DRState(<String, CardState>{});
+}
+
+LearningCardState makeInitialCardState({int id, Combination combination}) {
+  return LearningCardState(
+      master: id,
+      combination: combination,
+      lastReviewed: null,
+      consecutiveCorrect: 0);
 }

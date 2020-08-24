@@ -1,41 +1,40 @@
+import 'dart:math' as math;
 import 'package:dolphinsr_dart/dolphinsr_dart.dart';
 import 'package:dolphinsr_dart/src/models.dart';
 import "package:test/test.dart";
-
-import 'dart:math' as math;
 import "dates.dart";
 
-final master = generateId();
+final int master = generateId();
 
-generateId() {
+int generateId() {
   return math.Random().nextInt(666);
 }
 
 Review makeReview(DateTime ts) {
   return Review(
     master: math.Random().nextInt(666),
-    combination: Combination(front: [0], back: [1]),
+    combination: const Combination(front: <int>[0], back: <int>[1]),
     ts: ts,
     rating: Rating.Easy,
   );
 }
 
-final List<Review> reviews = [
-  Dates.today,
-  Dates.todayAt3AM,
-  Dates.laterToday,
-  Dates.laterTmrw,
-  Dates.laterInTwoDays,
-  Dates.laterInFourDays,
+final List<Review> reviews = <DateTime>[
+  today,
+  todayAt3AM,
+  laterToday,
+  laterTmrw,
+  laterInTwoDays,
+  laterInFourDays,
 ].map(makeReview).toList();
 
 void main() {
   test("should start out empty", () {
-    DolphinSR d = DolphinSR();
+    final DolphinSR d = DolphinSR();
     expect(d.nextCard(), isNull);
 
     SummaryStatics s =
-        SummaryStatics(later: 0, due: 0, overdue: 0, learning: 0);
+        const SummaryStatics(later: 0, due: 0, overdue: 0, learning: 0);
     expect(d.summary(), equals(s));
   });
 
@@ -99,7 +98,7 @@ void main() {
   });
 
   test("should add reviews", () {
-    DolphinSR d = DolphinSR(currentDateGetter: Dates.today);
+    DolphinSR d = DolphinSR(currentDateGetter: today);
     int id = generateId();
     Combination combination = Combination(front: [0], back: [1, 0]);
     Master master =
@@ -117,10 +116,7 @@ void main() {
     expect(d.summary().learning, equals(1));
 
     Review review = Review(
-        master: id,
-        combination: combination,
-        ts: Dates.today,
-        rating: Rating.Easy);
+        master: id, combination: combination, ts: today, rating: Rating.Easy);
     d.addReviews([review]);
 
     expect(d.summary().later, equals(1));
@@ -137,7 +133,7 @@ void main() {
       Review(
           master: secondMaster.id,
           combination: secondMaster.combinations[0],
-          ts: Dates.today,
+          ts: today,
           rating: Rating.Easy)
     ]);
     expect(d.summary().later, equals(2));

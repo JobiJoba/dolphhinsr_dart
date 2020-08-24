@@ -1,17 +1,15 @@
-class CardId {
-  int id;
-  String frontJoin;
-  String backJoin;
-  DateTime time;
+import 'package:equatable/equatable.dart';
 
-  String uniqueId;
-
+class CardId extends Equatable {
   CardId({int master, Combination combination}) {
     id = master;
     frontJoin = combination.front.join(',');
     backJoin = combination.back.join(',');
     uniqueId = "$id#$frontJoin@$backJoin";
   }
+
+  CardId.fromAllParameters(
+      {this.id, this.frontJoin, this.backJoin, this.time, this.uniqueId});
 
   CardId.fromState(CardState state) {
     id = state.master;
@@ -29,87 +27,92 @@ class CardId {
     time = review.ts;
     uniqueId = "$id#$frontJoin@$backJoin";
   }
-}
 
-class Combination {
-  List<int> front;
-  List<int> back;
-
-  Combination({this.front, this.back});
-}
-
-class Master {
   int id;
-  List<String> fields;
-  List<Combination> combinations;
+  String frontJoin;
+  String backJoin;
+  DateTime time;
+  String uniqueId;
 
-  Master({this.id, this.fields, this.combinations});
+  @override
+  List<Object> get props => <Object>[uniqueId];
+}
+
+class Combination extends Equatable {
+  const Combination({this.front, this.back});
+
+  final List<int> front;
+  final List<int> back;
+
+  @override
+  List<Object> get props => <Object>[front, back];
+}
+
+class Master extends Equatable {
+  const Master({this.id, this.fields, this.combinations});
+
+  final int id;
+  final List<String> fields;
+  final List<Combination> combinations;
+
+  @override
+  List<Object> get props => <Object>[id];
 }
 
 enum Rating { Easy, Good, Hard, Again }
 
-class Review {
-  int master;
-  Combination combination;
-  DateTime ts;
-  Rating rating;
+class Review extends Equatable {
+  const Review({this.master, this.combination, this.ts, this.rating});
 
-  Review({this.master, this.combination, this.ts, this.rating});
+  final int master;
+  final Combination combination;
+  final DateTime ts;
+  final Rating rating;
+
+  @override
+  List<Object> get props => <Object>[master, rating];
 }
 
-class DRCard {
-  int master;
-  Combination combination;
-  List<String> front;
-  List<String> back;
+class DRCard extends Equatable {
+  const DRCard({this.master, this.combination, this.front, this.back});
 
-  DRCard({this.master, this.combination, this.front, this.back});
+  final int master;
+  final Combination combination;
+  final List<String> front;
+  final List<String> back;
 
-  int get hashCode => master.hashCode;
-
-  bool operator ==(o) => o is DRCard && master == o.master;
+  @override
+  List<Object> get props => <Object>[master, front, back];
 }
 
-abstract class CardState {
-  int master;
-  Combination combination;
-
-  String mode;
-  DateTime lastReviewed;
-  double interval;
-
-  CardState(this.master, this.combination, this.mode, this.lastReviewed,
+abstract class CardState extends Equatable {
+  const CardState(this.master, this.combination, this.mode, this.lastReviewed,
       this.interval);
+  final int master;
+  final Combination combination;
 
-  int get hashCode => master.hashCode ^ interval.hashCode;
+  final String mode;
+  final DateTime lastReviewed;
+  final double interval;
 
-  bool operator ==(o) => o is CardState && master == o.master;
-
-  static makeInitialCardState({int id, Combination combination}) {
-    return LearningCardState(
-        master: id,
-        combination: combination,
-        lastReviewed: null,
-        consecutiveCorrect: 0);
-  }
+  @override
+  List<Object> get props => <Object>[master, lastReviewed];
 }
 
 class LearningCardState extends CardState {
-  int consecutiveCorrect;
-  LearningCardState(
+  const LearningCardState(
       {int master,
       Combination combination,
       this.consecutiveCorrect,
       DateTime lastReviewed,
       double interval})
       : super(master, combination, "learning", lastReviewed, interval);
+
+  final int consecutiveCorrect;
 }
 
 class ReviewingCardState extends CardState {
-  double factor;
-  int lapses;
-
-  ReviewingCardState({
+  const ReviewingCardState({
     int master,
     Combination combination,
     this.factor,
@@ -117,13 +120,13 @@ class ReviewingCardState extends CardState {
     double interval,
     DateTime lastReviewed,
   }) : super(master, combination, "reviewing", lastReviewed, interval);
+
+  final double factor;
+  final int lapses;
 }
 
 class LapsedCardState extends CardState {
-  double factor;
-  int lapses;
-  int consecutiveCorrect;
-  LapsedCardState(
+  const LapsedCardState(
       {int master,
       Combination combination,
       this.consecutiveCorrect,
@@ -132,55 +135,52 @@ class LapsedCardState extends CardState {
       double interval,
       DateTime lastReviewed})
       : super(master, combination, "lapsed", lastReviewed, interval);
+
+  final double factor;
+  final int lapses;
+  final int consecutiveCorrect;
 }
 
-class DRState {
-  Map<String, CardState> cardStates;
-  static makeEmptyState() {
-    return DRState(Map());
-  }
+class DRState extends Equatable {
+  const DRState(this.cardStates);
 
-  DRState(this.cardStates);
+  final Map<String, CardState> cardStates;
+
+  @override
+  List<Object> get props => [cardStates];
 }
 
-abstract class BaseScheduleAndStat {
-  int later;
-  int due;
-  int overdue;
-  int learning;
+abstract class BaseScheduleAndStat extends Equatable {
+  const BaseScheduleAndStat(this.later, this.due, this.overdue, this.learning);
 
-  int get hashCode =>
-      later.hashCode ^ due.hashCode ^ learning.hashCode ^ overdue.hashCode;
+  final int later;
+  final int due;
+  final int overdue;
+  final int learning;
 
-  bool operator ==(o) =>
-      o is BaseScheduleAndStat &&
-      later == o.later &&
-      due == o.due &&
-      overdue == o.overdue &&
-      learning == o.learning;
-
-  BaseScheduleAndStat(this.later, this.due, this.overdue, this.learning);
+  @override
+  List<Object> get props => <Object>[later, due, overdue, learning];
 }
 
 class Schedule extends BaseScheduleAndStat {
-  Schedule({int later, int due, int overdue, int learning})
+  const Schedule({int later, int due, int overdue, int learning})
       : super(later, due, overdue, learning);
 }
 
 class SummaryStatics extends BaseScheduleAndStat {
-  SummaryStatics({int later, int due, int overdue, int learning})
+  const SummaryStatics({int later, int due, int overdue, int learning})
       : super(later, due, overdue, learning);
 }
 
-class CardsSchedule {
-  List<CardId> later;
-  List<CardId> due;
-  List<CardId> overdue;
-  List<CardId> learning;
+class CardsSchedule extends Equatable {
+  const CardsSchedule({this.later, this.due, this.overdue, this.learning});
 
-  CardsSchedule({this.later, this.due, this.overdue, this.learning});
+  final List<CardId> later;
+  final List<CardId> due;
+  final List<CardId> overdue;
+  final List<CardId> learning;
 
-  getPropertyValue(String name) {
+  List<CardId> getPropertyValue(String name) {
     if (name == "later") {
       return later;
     } else if (name == "due") {
@@ -190,5 +190,11 @@ class CardsSchedule {
     } else if (name == "learning") {
       return learning;
     }
+
+    // TODO(JobiJoba): create an error state, https://github.com/NoIssueYet
+    return later;
   }
+
+  @override
+  List<Object> get props => <Object>[later, due, overdue, learning];
 }
