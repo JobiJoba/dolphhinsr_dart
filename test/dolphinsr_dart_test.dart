@@ -4,15 +4,15 @@ import 'package:dolphinsr_dart/src/models.dart';
 import "package:test/test.dart";
 import "dates.dart";
 
-final int master = generateId();
+final String master = generateId();
 
-int generateId() {
-  return math.Random().nextInt(666);
+String generateId() {
+  return math.Random().nextInt(666).toString();
 }
 
 Review makeReview(DateTime ts) {
   return Review(
-    master: math.Random().nextInt(666),
+    master: generateId(),
     combination: const Combination(front: <int>[0], back: <int>[1]),
     ts: ts,
     rating: Rating.Easy,
@@ -40,7 +40,7 @@ void main() {
 
   test("should add a new masters to the learning", () {
     DolphinSR d = DolphinSR();
-    int id = generateId();
+    String id = generateId();
     Master master = Master(id: id, fields: [
       'Hello',
       "world"
@@ -61,14 +61,14 @@ void main() {
 
   test("should add multiple new masters to the learning category", () {
     DolphinSR d = DolphinSR();
-    int id = generateId();
+    String id = generateId();
     Master master = Master(id: id, fields: [
       'Hello',
       "world"
     ], combinations: [
       Combination(front: [0], back: [1, 0])
     ]);
-    int id2 = generateId();
+    String id2 = generateId();
 
     Master master2 = Master(id: id2, fields: [
       'Hello',
@@ -83,7 +83,7 @@ void main() {
         SummaryStatics(later: 0, due: 0, overdue: 0, learning: 2);
     expect(d.summary(), equals(s));
 
-    int id3 = generateId();
+    String id3 = generateId();
 
     Master master3 = Master(id: id3, fields: [
       'Hello',
@@ -99,7 +99,7 @@ void main() {
 
   test("should add reviews", () {
     DolphinSR d = DolphinSR(currentDateGetter: today);
-    int id = generateId();
+    String id = generateId();
     Combination combination = Combination(front: [0], back: [1, 0]);
     Master master =
         Master(id: id, fields: ['Hello', "world"], combinations: [combination]);
@@ -142,7 +142,7 @@ void main() {
 
   /* test("Will it works ? ", () {
     DolphinSR d = DolphinSR(currentDateGetter: Dates.today);
-    int id = generateId();
+    String id = generateId();
     Combination combination = Combination([0], [1, 0]);
     Master master = Master(id, ['Hello', "world"], [combination]);
 

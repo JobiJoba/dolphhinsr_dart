@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
 
 class CardId extends Equatable {
-  CardId({int master, Combination combination}) {
+  CardId({String master, Combination combination}) {
     id = master;
     frontJoin = combination.front.join(',');
     backJoin = combination.back.join(',');
-    uniqueId = "$id#$frontJoin@$backJoin";
+    uniqueId = '$id#$frontJoin@$backJoin';
   }
 
   CardId.fromAllParameters(
@@ -17,7 +17,7 @@ class CardId extends Equatable {
     backJoin = state.combination.back.join(',');
     time = state.lastReviewed;
 
-    uniqueId = "$id#$frontJoin@$backJoin";
+    uniqueId = '$id#$frontJoin@$backJoin';
   }
 
   CardId.fromReview(Review review) {
@@ -25,14 +25,19 @@ class CardId extends Equatable {
     frontJoin = review.combination.front.join(',');
     backJoin = review.combination.back.join(',');
     time = review.ts;
-    uniqueId = "$id#$frontJoin@$backJoin";
+    uniqueId = '$id#$frontJoin@$backJoin';
   }
 
-  int id;
+  String id;
   String frontJoin;
   String backJoin;
   DateTime time;
   String uniqueId;
+
+  @override
+  String toString() {
+    return 'CardId(${uniqueId})';
+  }
 
   @override
   List<Object> get props => <Object>[uniqueId];
@@ -51,7 +56,7 @@ class Combination extends Equatable {
 class Master extends Equatable {
   const Master({this.id, this.fields, this.combinations});
 
-  final int id;
+  final String id;
   final List<String> fields;
   final List<Combination> combinations;
 
@@ -64,7 +69,7 @@ enum Rating { Easy, Good, Hard, Again }
 class Review extends Equatable {
   const Review({this.master, this.combination, this.ts, this.rating});
 
-  final int master;
+  final String master;
   final Combination combination;
   final DateTime ts;
   final Rating rating;
@@ -76,7 +81,7 @@ class Review extends Equatable {
 class DRCard extends Equatable {
   const DRCard({this.master, this.combination, this.front, this.back});
 
-  final int master;
+  final String master;
   final Combination combination;
   final List<String> front;
   final List<String> back;
@@ -88,7 +93,7 @@ class DRCard extends Equatable {
 abstract class CardState extends Equatable {
   const CardState(this.master, this.combination, this.mode, this.lastReviewed,
       this.interval);
-  final int master;
+  final String master;
   final Combination combination;
 
   final String mode;
@@ -101,25 +106,25 @@ abstract class CardState extends Equatable {
 
 class LearningCardState extends CardState {
   const LearningCardState(
-      {int master,
+      {String master,
       Combination combination,
       this.consecutiveCorrect,
       DateTime lastReviewed,
       double interval})
-      : super(master, combination, "learning", lastReviewed, interval);
+      : super(master, combination, 'learning', lastReviewed, interval);
 
   final int consecutiveCorrect;
 }
 
 class ReviewingCardState extends CardState {
   const ReviewingCardState({
-    int master,
+    String master,
     Combination combination,
     this.factor,
     this.lapses,
     double interval,
     DateTime lastReviewed,
-  }) : super(master, combination, "reviewing", lastReviewed, interval);
+  }) : super(master, combination, 'reviewing', lastReviewed, interval);
 
   final double factor;
   final int lapses;
@@ -127,14 +132,14 @@ class ReviewingCardState extends CardState {
 
 class LapsedCardState extends CardState {
   const LapsedCardState(
-      {int master,
+      {String master,
       Combination combination,
       this.consecutiveCorrect,
       this.factor,
       this.lapses,
       double interval,
       DateTime lastReviewed})
-      : super(master, combination, "lapsed", lastReviewed, interval);
+      : super(master, combination, 'lapsed', lastReviewed, interval);
 
   final double factor;
   final int lapses;
@@ -181,17 +186,17 @@ class CardsSchedule extends Equatable {
   final List<CardId> learning;
 
   List<CardId> getPropertyValue(String name) {
-    if (name == "later") {
+    if (name == 'later') {
       return later;
-    } else if (name == "due") {
+    } else if (name == 'due') {
       return due;
-    } else if (name == "overdue") {
+    } else if (name == 'overdue') {
       return overdue;
-    } else if (name == "learning") {
+    } else if (name == 'learning') {
       return learning;
     }
 
-    // TODO(JobiJoba): create an error state, https://github.com/NoIssueYet
+    // TODO(JobiJoba): create an error state
     return later;
   }
 

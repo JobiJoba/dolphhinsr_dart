@@ -1,18 +1,18 @@
 import 'dart:math' as math;
 import 'package:dolphinsr_dart/src/models.dart';
 import 'package:dolphinsr_dart/src/utils.dart';
-import "package:test/test.dart";
-import "dates.dart";
+import 'package:test/test.dart';
+import 'dates.dart';
 
 final master = generateId();
 
-generateId() {
-  return math.Random().nextInt(666);
+String generateId() {
+  return math.Random().nextInt(666).toString();
 }
 
 Review makeReview(DateTime ts) {
   return Review(
-    master: math.Random().nextInt(666),
+    master: generateId(),
     combination: Combination(front: [0], back: [1]),
     ts: ts,
     rating: Rating.Easy,
@@ -31,7 +31,7 @@ final List<Review> reviews = [
 void main() {
   test("should add a review to an empty list", () {
     DRState state = makeEmptyState();
-    int id = generateId();
+    String id = generateId();
     Combination combination = Combination(front: [], back: []);
     Review review = Review(
         master: id, combination: combination, ts: today, rating: Rating.Easy);
@@ -43,7 +43,7 @@ void main() {
       "should error if adding a review to a state with a lastReviewed later than the review",
       () {
     DRState state = makeEmptyState();
-    int id = generateId();
+    String id = generateId();
     Combination combination = Combination(front: [0], back: [1]);
 
     CardId cardId = CardId(master: id, combination: combination);
@@ -70,7 +70,7 @@ void main() {
       "should return a new state reflecting the rating when adding a review to a state with the given master and combination",
       () {
     DRState state = makeEmptyState();
-    int id = generateId();
+    String id = generateId();
     Combination combination = Combination(front: [0], back: [1]);
 
     CardId cardId = CardId(master: id, combination: combination);
@@ -94,7 +94,7 @@ void main() {
       "should accurately navigate through learning, reviewing, and lapsed modes",
       () {
     DRState state = makeEmptyState();
-    int id = generateId();
+    String id = generateId();
     Combination combination = Combination(front: [0], back: [1]);
 
     CardId cardId = CardId(master: id, combination: combination);

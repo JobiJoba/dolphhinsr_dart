@@ -7,24 +7,24 @@ export './src/models.dart';
 class DolphinSR {
   DolphinSR({this.currentDateGetter}) {
     _state = makeEmptyState();
-    _masters = <int, Master>{};
+    _masters = <String, Master>{};
     currentDateGetter ??= DateTime.now();
   }
 
   DRState _state;
-  Map<int, Master> _masters;
+  Map<String, Master> _masters;
   CardsSchedule _cachedCardsSchedule;
   DateTime currentDateGetter;
 
   void _addMaster(Master master) {
     if (_masters.isNotEmpty) {
       if (_masters.containsKey(master.id)) {
-        throw Exception("Already added masters");
+        throw Exception('Already added masters');
       }
     }
 
-    for (final Combination combination in master.combinations) {
-      final CardId cardId = CardId(master: master.id, combination: combination);
+    for (final combination in master.combinations) {
+      final cardId = CardId(combination: combination, master: master.id);
 
       _state.cardStates[cardId.uniqueId] =
           makeInitialCardState(id: master.id, combination: combination);
@@ -38,15 +38,15 @@ class DolphinSR {
   }
 
   void addMasters(List<Master> masters) {
-    for (int i = 0; i < masters.length; i++) {
-      final Master master = masters[i];
+    for (var i = 0; i < masters.length; i++) {
+      final master = masters[i];
       _addMaster(master);
     }
     _cachedCardsSchedule = null;
   }
 
   void addReviews(List<Review> reviews) {
-    for (final Review review in reviews) {
+    for (final review in reviews) {
       _state = applyReview(_state, review);
     }
     _cachedCardsSchedule = null;
@@ -62,33 +62,32 @@ class DolphinSR {
   }
 
   CardId _nextCardId() {
-    final CardsSchedule cardSchedule = _getCardsSchedule();
+    final cardSchedule = _getCardsSchedule();
     return pickMostDue(cardSchedule, _state);
   }
 
   DRCard _getCard(CardId cardId) {
-    final Master master = _masters[cardId.id];
+    final master = _masters[cardId.id];
+
     if (master == null) {
-      throw Exception("Master is null; cannot get card");
+      throw Exception('Master is null; cannot get card');
     }
 
-    final List<int> front = cardId.frontJoin
+    final front = cardId.frontJoin
         .split(',')
         .map((String elem) => int.parse(elem))
         .toList();
-    final List<int> back = cardId.backJoin
+    final back = cardId.backJoin
         .split(',')
         .map((String elem) => int.parse(elem))
         .toList();
 
-    final Combination combination = Combination(front: front, back: back);
+    final combination = Combination(front: front, back: back);
 
-    final List<String> frontField =
-        front.map((int i) => master.fields[i]).toList();
-    final List<String> backFields =
-        back.map((int i) => master.fields[i]).toList();
+    final frontField = front.map((int i) => master.fields[i]).toList();
+    final backFields = back.map((int i) => master.fields[i]).toList();
 
-    final DRCard card = DRCard(
+    final card = DRCard(
         master: master.id,
         combination: combination,
         front: frontField,
@@ -98,7 +97,7 @@ class DolphinSR {
   }
 
   DRCard nextCard() {
-    final CardId nextCardId = _nextCardId();
+    final nextCardId = _nextCardId();
     if (nextCardId == null) {
       return null;
     }
@@ -106,8 +105,8 @@ class DolphinSR {
   }
 
   SummaryStatics summary() {
-    final CardsSchedule s = _getCardsSchedule();
-    final SummaryStatics summary = SummaryStatics(
+    final s = _getCardsSchedule();
+    final summary = SummaryStatics(
         later: s.later.length,
         due: s.due.length,
         overdue: s.overdue.length,

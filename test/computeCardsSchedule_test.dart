@@ -7,13 +7,13 @@ import "dates.dart";
 
 final master = generateId();
 
-generateId() {
-  return math.Random().nextInt(666);
+String generateId() {
+  return math.Random().nextInt(666).toString();
 }
 
 Review makeReview(DateTime ts) {
   return Review(
-    master: math.Random().nextInt(666),
+    master: generateId(),
     combination: Combination(front: [0], back: [1]),
     ts: ts,
     rating: Rating.Easy,
@@ -31,7 +31,7 @@ final List<Review> reviews = [
 
 void main() {
   test("should add a rounded interval to the lastReviewed, set at 3am", () {
-    int id = generateId();
+    String id = generateId();
     Combination combination = Combination(front: [0], back: [1]);
     ReviewingCardState stateCard = ReviewingCardState(
         master: id,
@@ -47,7 +47,7 @@ void main() {
     expect(due, equals(expectedDate));
   });
   test("should return later for cards that are reviewing and not yet due", () {
-    int id = generateId();
+    String id = generateId();
     Combination combination = Combination(front: [0], back: [1]);
 
     ReviewingCardState stateCard = ReviewingCardState(
@@ -65,7 +65,7 @@ void main() {
 
   test("should return due for cards that are reviewing and due within the day",
       () {
-    int id = generateId();
+    String id = generateId();
     Combination combination = Combination(front: [0], back: [1]);
 
     ReviewingCardState stateCard = ReviewingCardState(
@@ -88,7 +88,7 @@ void main() {
 
   test("should return overdue for cards that reviewing and due before the day",
       () {
-    int id = generateId();
+    String id = generateId();
     Combination combination = Combination(front: [0], back: [1]);
 
     ReviewingCardState stateCard = ReviewingCardState(
@@ -122,7 +122,7 @@ void main() {
       () {
     DRState emptyState = makeEmptyState();
 
-    int id = generateId();
+    String id = generateId();
     Combination combination = Combination(front: [0], back: [1]);
 
     ReviewingCardState dueLater = ReviewingCardState(
@@ -191,7 +191,7 @@ void main() {
       () {
     DRState emptyState = makeEmptyState();
 
-    int id = generateId();
+    String id = generateId();
     Combination combination = Combination(front: [0], back: [1]);
 
     ReviewingCardState dueLater = ReviewingCardState(

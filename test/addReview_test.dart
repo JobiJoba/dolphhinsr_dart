@@ -6,15 +6,15 @@ import "package:test/test.dart";
 
 import "dates.dart";
 
-final int master = generateId();
+final String master = generateId();
 
-int generateId() {
-  return math.Random().nextInt(666);
+String generateId() {
+  return math.Random().nextInt(666).toString();
 }
 
 Review makeReview(DateTime ts, {Rating rating = Rating.Easy}) {
   return Review(
-    master: math.Random().nextInt(666),
+    master: generateId(),
     combination: Combination(front: [0], back: [1]),
     ts: ts,
     rating: rating,

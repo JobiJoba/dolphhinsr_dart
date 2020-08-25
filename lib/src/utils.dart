@@ -5,7 +5,7 @@ List<Review> addReview(List<Review> reviews, Review review) {
   if (reviews.isEmpty) {
     return <Review>[review];
   }
-  int i = reviews.length - 1;
+  var i = reviews.length - 1;
   for (; i >= 0; i -= 1) {
     if (reviews[i].ts.isBefore(review.ts) ||
         reviews[i].ts.isAtSameMomentAs(review.ts)) {
@@ -13,7 +13,7 @@ List<Review> addReview(List<Review> reviews, Review review) {
     }
   }
 
-  final List<Review> newReviews = reviews.sublist(0);
+  final newReviews = reviews.sublist(0);
   newReviews.insert(i + 1, review);
 
   return newReviews;
@@ -34,7 +34,7 @@ CardState applyToLearningCardState(
   if (rating == Rating.Easy ||
       (rating == Rating.Easy || rating == Rating.Good) &&
           prev.consecutiveCorrect > 0) {
-    final double interval = prev.consecutiveCorrect > 0
+    final interval = prev.consecutiveCorrect > 0
         ? INITIAL_DAYS_WITHOUT_JUMP
         : INITIAL_DAYS_WITH_JUMP;
     return ReviewingCardState(
@@ -67,11 +67,11 @@ num constrainWithin(double min, int max, double n) {
 }
 
 DateTime calculateDueDate(CardState state) {
-  final DateTime result = state.lastReviewed;
+  final result = state.lastReviewed;
 
-  const int newHour = 3;
-  final int newDay = result.day + state.interval.ceil();
-  DateTime newResult = result.toLocal();
+  const newHour = 3;
+  final newDay = result.day + state.interval.ceil();
+  var newResult = result.toLocal();
   newResult = DateTime(result.year, result.month, newDay, newHour,
       result.minute, result.second, result.millisecond, result.microsecond);
 
@@ -79,36 +79,36 @@ DateTime calculateDueDate(CardState state) {
 }
 
 String computeScheduleFromCardState(CardState state, DateTime now) {
-  if (state.mode == "lapsed" || state.mode == "learning") {
-    return "learning";
-  } else if (state.mode == "reviewing") {
-    final double diff = dateDiffInDays(calculateDueDate(state), now);
+  if (state.mode == 'lapsed' || state.mode == 'learning') {
+    return 'learning';
+  } else if (state.mode == 'reviewing') {
+    final diff = dateDiffInDays(calculateDueDate(state), now);
     if (diff < 0) {
-      return "later";
+      return 'later';
     } else if (diff >= 0 && diff < 1) {
-      return "due";
+      return 'due';
     } else if (diff >= 1) {
-      return "overdue";
+      return 'overdue';
     }
   }
 
-  throw Exception("Issue with mode and calculation of a cardState");
+  throw Exception('Issue with mode and calculation of a cardState');
 }
 
 CardId pickMostDue(CardsSchedule s, DRState state) {
-  final List<String> scheduleKey = <String>["learning", "overdue", "due"];
+  final scheduleKey = <String>['learning', 'overdue', 'due'];
 
-  for (int i = 0; i < scheduleKey.length; i++) {
-    final String key = scheduleKey[i];
-    final List<CardId> propertyValue = s.getPropertyValue(key);
+  for (var i = 0; i < scheduleKey.length; i++) {
+    final key = scheduleKey[i];
+    final propertyValue = s.getPropertyValue(key);
     if (propertyValue.isNotEmpty) {
-      final List<CardId> first = propertyValue.sublist(0);
+      final first = propertyValue.sublist(0);
 
       first.sort((CardId a, CardId b) {
-        final CardState cardA = state.cardStates[a.uniqueId];
-        final CardState cardB = state.cardStates[b.uniqueId];
+        final cardA = state.cardStates[a.uniqueId];
+        final cardB = state.cardStates[b.uniqueId];
 
-        final int reviewDiff =
+        final reviewDiff =
             (cardA.lastReviewed == null && cardB.lastReviewed != null)
                 ? 1
                 : (cardB.lastReviewed == null && cardA.lastReviewed != null)
@@ -121,9 +121,9 @@ CardId pickMostDue(CardsSchedule s, DRState state) {
           return -reviewDiff;
         }
         if (a == b) {
-          throw Exception("comparing duplicate id: $a");
+          throw Exception('comparing duplicate id: $a');
         }
-        return a.id > b.id ? 0 : 1;
+        return a.id.compareTo(b.id) == -1 ? 0 : 1;
       });
       return first[0];
     }
@@ -132,17 +132,16 @@ CardId pickMostDue(CardsSchedule s, DRState state) {
 }
 
 CardsSchedule computeCardsSchedule(DRState state, DateTime now) {
-  final CardsSchedule s = CardsSchedule(
+  final s = CardsSchedule(
       later: <CardId>[],
       due: <CardId>[],
       overdue: <CardId>[],
       learning: <CardId>[]);
 
-  for (final String cardStateKey in state.cardStates.keys) {
-    final CardState cardState = state.cardStates[cardStateKey];
+  for (final cardStateKey in state.cardStates.keys) {
+    final cardState = state.cardStates[cardStateKey];
 
-    final String calculatedSchedule =
-        computeScheduleFromCardState(cardState, now);
+    final calculatedSchedule = computeScheduleFromCardState(cardState, now);
 
     s.getPropertyValue(calculatedSchedule).add(CardId.fromState(cardState));
   }
@@ -152,21 +151,21 @@ CardsSchedule computeCardsSchedule(DRState state, DateTime now) {
 
 double dateDiffInDays(DateTime a, DateTime b) {
   // adapted from http://stackoverflow.com/a/15289883/251162
-  const int MS_PER_DAY = 1000 * 60 * 60 * 24;
+  const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
   // Disstate the time and time-zone information.
 
-  final DateTime utc1 = DateTime.utc(a.year, a.month, a.day);
+  final utc1 = DateTime.utc(a.year, a.month, a.day);
 
-  final DateTime utc2 = DateTime.utc(b.year, b.month, b.day);
+  final utc2 = DateTime.utc(b.year, b.month, b.day);
 
   return (utc2.difference(utc1)).inMilliseconds / MS_PER_DAY;
 }
 
 double calculateDaysLate(ReviewingCardState state, DateTime actual) {
-  final DateTime excpected = calculateDueDate(state);
+  final excpected = calculateDueDate(state);
 
-  final double daysLate = dateDiffInDays(actual, excpected);
+  final daysLate = dateDiffInDays(actual, excpected);
 
   return daysLate;
 }
@@ -185,20 +184,20 @@ CardState applyToReviewingCardState(
         lastReviewed: ts);
   }
 
-  final num factorAdj = rating == Rating.Hard
+  final factorAdj = rating == Rating.Hard
       ? -150
       : rating == Rating.Good ? 0 : rating == Rating.Easy ? 150 : double.nan;
 
-  final num daysLate = calculateDaysLate(prev, ts);
+  final daysLate = calculateDaysLate(prev, ts);
 
-  final num fact = rating == Rating.Hard
+  final fact = rating == Rating.Hard
       ? (prev.interval + (daysLate / 4)) * 1.2
       : rating == Rating.Good
           ? ((prev.interval + (daysLate / 2)) * prev.factor) / 1000
           : rating == Rating.Easy
               ? (((prev.interval + daysLate) * prev.factor) / 1000) * EASY_BONUS
               : double.nan;
-  final num ival = constrainWithin(prev.interval + 1, MAX_INTERVAL, fact);
+  final ival = constrainWithin(prev.interval + 1, MAX_INTERVAL, fact);
 
   return ReviewingCardState(
       master: prev.master,
@@ -240,29 +239,28 @@ CardState applyToLapsedCardState(
 
 CardState applyToCardState(CardState prev, DateTime ts, Rating rating) {
   if (prev.lastReviewed != null && prev.lastReviewed.isAfter(ts)) {
-    throw "Cannot apply review before current lastReviewed";
+    throw 'Cannot apply review before current lastReviewed';
   }
 
-  if (prev.mode == "learning") {
+  if (prev.mode == 'learning') {
     return applyToLearningCardState(prev, ts, rating);
-  } else if (prev.mode == "reviewing") {
+  } else if (prev.mode == 'reviewing') {
     return applyToReviewingCardState(prev, ts, rating);
-  } else if (prev.mode == "lapsed") {
+  } else if (prev.mode == 'lapsed') {
     return applyToLapsedCardState(prev, ts, rating);
   }
 
-  throw Exception("Card mode is incorrect");
+  throw Exception('Card mode is incorrect');
 }
 
 DRState applyReview(DRState prev, Review review) {
-  final CardId cardId = CardId.fromReview(review);
+  final cardId = CardId.fromReview(review);
 
-  final CardState cardState = prev.cardStates[cardId.uniqueId];
+  final cardState = prev.cardStates[cardId.uniqueId];
   if (cardState == null) {
     throw '''applying review to missing card: ${review.master}''';
   }
-  final DRState newState =
-      DRState(Map<String, CardState>.from(prev.cardStates));
+  final newState = DRState(Map<String, CardState>.from(prev.cardStates));
 
   newState.cardStates[cardId.uniqueId] =
       applyToCardState(cardState, review.ts, review.rating);
@@ -271,17 +269,17 @@ DRState applyReview(DRState prev, Review review) {
 }
 
 String getCardIdFromCardState(CardState cardState) {
-  final int id = cardState.master;
-  final String frontJoin = cardState.combination.front.join(",");
-  final String backJoin = cardState.combination.back.join(",");
-  return "$id#$frontJoin@$backJoin";
+  final id = cardState.master;
+  final frontJoin = cardState.combination.front.join(',');
+  final backJoin = cardState.combination.back.join(',');
+  return '$id#$frontJoin@$backJoin';
 }
 
 DRState makeEmptyState() {
   return DRState(<String, CardState>{});
 }
 
-LearningCardState makeInitialCardState({int id, Combination combination}) {
+LearningCardState makeInitialCardState({String id, Combination combination}) {
   return LearningCardState(
       master: id,
       combination: combination,
