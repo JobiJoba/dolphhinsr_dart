@@ -31,7 +31,7 @@ Add that to your pubspec.yaml
 
 ```yaml
 dependencies:
- dolphinsr_dart: "^1.0.9"
+ dolphinsr_dart: "^2.0.0"
 ```
 
 ## Quick Start
@@ -44,14 +44,14 @@ List<Review> reviews = [];
   DolphinSR dolphin = new DolphinSR();
 
   dolphin.addMasters([
-    Master(id: 1, fields: [
+    Master(id: '1', fields: [
       'คน',
       'person'
     ], combinations: [
       Combination(front: [0], back: [1]),
       Combination(front: [1], back: [0]),
     ]),
-    Master(id: 2, fields: [
+    Master(id: '2', fields: [
       'คบ',
       'To date'
     ], combinations: [

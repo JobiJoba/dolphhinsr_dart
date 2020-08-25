@@ -1,3 +1,10 @@
+## [2.0.0] - 25/09/2020
+BREAKING CHANGE 
+- Change type  of  Master Id from  int to String to support guid and more complex ID.
+
+NON BREAKING CHANGE
+- Use the analysis_options.yaml from dart pub
+
 ## [1.0.9] - 24/09/2020
 - Rewrite the code to be more "Dart" way; remove static for Utility class (Still in progress)
 - Add depedencies on Equatable to check equality instead of manually overriding.

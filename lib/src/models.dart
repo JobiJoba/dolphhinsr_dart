@@ -8,9 +8,6 @@ class CardId extends Equatable {
     uniqueId = '$id#$frontJoin@$backJoin';
   }
 
-  CardId.fromAllParameters(
-      {this.id, this.frontJoin, this.backJoin, this.time, this.uniqueId});
-
   CardId.fromState(CardState state) {
     id = state.master;
     frontJoin = state.combination.front.join(',');
