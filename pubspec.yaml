@@ -1,6 +1,6 @@
 name: dolphinsr_dart
 description: A spaced-repetition algorithm in dart. Usefull to build a flaschard system in Dart for Flutter or Web.
-version: 1.0.9
+version: 2.0.0
 homepage: https://github.com/JobiJoba/dolphhinsr_dart
 
 environment:
