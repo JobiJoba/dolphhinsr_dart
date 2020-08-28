@@ -69,31 +69,49 @@ class DolphinSR {
   DRCard _getCard(CardId cardId) {
     final master = _masters[cardId.id];
 
+    final cardState = _state.cardStates[cardId.uniqueId];
+
     if (master == null) {
       throw Exception('Master is null; cannot get card');
     }
 
-    final front = cardId.frontJoin
-        .split(',')
-        .map((String elem) => int.parse(elem))
-        .toList();
-    final back = cardId.backJoin
-        .split(',')
-        .map((String elem) => int.parse(elem))
-        .toList();
+    final frontField =
+        cardState.combination.front.map((int i) => master.fields[i]).toList();
+    final backFields =
+        cardState.combination.back.map((int i) => master.fields[i]).toList();
 
-    final combination = Combination(front: front, back: back);
-
-    final frontField = front.map((int i) => master.fields[i]).toList();
-    final backFields = back.map((int i) => master.fields[i]).toList();
-
+    final dueDate = calculateDueDate(cardState);
     final card = DRCard(
-        master: master.id,
-        combination: combination,
+        master: cardState.master,
+        combination: cardState.combination,
         front: frontField,
-        back: backFields);
+        back: backFields,
+        lastReviewed: cardState.lastReviewed,
+        dueDate: dueDate);
 
     return card;
+  }
+
+  List<DRCard> getAllCardState() {
+    return _state.cardStates.values.map((cardState) {
+      final frontField = cardState.combination.front
+          .map((int i) => _masters[cardState.master].fields[i])
+          .toList();
+      final backFields = cardState.combination.back
+          .map((int i) => _masters[cardState.master].fields[i])
+          .toList();
+
+      final dueDate = calculateDueDate(cardState);
+      final card = DRCard(
+          master: cardState.master,
+          combination: cardState.combination,
+          front: frontField,
+          back: backFields,
+          lastReviewed: cardState.lastReviewed,
+          dueDate: dueDate);
+
+      return card;
+    }).toList();
   }
 
   DRCard nextCard() {
@@ -113,5 +131,22 @@ class DolphinSR {
         learning: s.learning.length);
 
     return summary;
+  }
+
+  int cardReviewedTodayLength() {
+    return cardReviewedAtDateLength(DateTime.now());
+  }
+
+  int cardReviewedAtDateLength(DateTime date) {
+    return _state.cardStates.values
+        .where((st) =>
+            st.lastReviewed.year == date.year &&
+            st.lastReviewed.month == date.month &&
+            st.lastReviewed.day == date.day)
+        .length;
+  }
+
+  int cardsLength() {
+    return _state.cardStates.length;
   }
 }

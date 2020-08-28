@@ -96,7 +96,7 @@ void main() {
       master: card.master,
       combination: card.combination,
       ts: DateTime.now(),
-      rating: Rating.Hard);
+      rating: Rating.Easy);
   dolphin.addReviews(<Review>[review]);
 
   stats =
@@ -109,7 +109,7 @@ void main() {
       master: card.master,
       combination: card.combination,
       ts: DateTime.now(),
-      rating: Rating.Hard);
+      rating: Rating.Easy);
   dolphin.addReviews(<Review>[review]);
 
   stats =
@@ -122,7 +122,7 @@ void main() {
       master: card.master,
       combination: card.combination,
       ts: DateTime.now(),
-      rating: Rating.Hard);
+      rating: Rating.Easy);
   dolphin.addReviews(<Review>[review]);
 
   stats =
@@ -135,7 +135,7 @@ void main() {
       master: card.master,
       combination: card.combination,
       ts: DateTime.now(),
-      rating: Rating.Hard);
+      rating: Rating.Easy);
   dolphin.addReviews(<Review>[review]);
 
   stats =
@@ -143,9 +143,9 @@ void main() {
   printStats(stats);
 }
 
-void printCard(card) {
+void printCard(DRCard card) {
   print(
-      '${card.back}-${card.front}-${card.combination.back}-${card.combination.front}');
+      '${card.master}-${card.back}-${card.front}-${card.combination.back}-${card.combination.front} - ${card.lastReviewed} - ${card.dueDate}');
 }
 
 void printStats(stats) {

@@ -68,6 +68,7 @@ num constrainWithin(double min, int max, double n) {
 
 DateTime calculateDueDate(CardState state) {
   final result = state.lastReviewed;
+  if (result == null || state.interval == null) return null;
 
   const newHour = 3;
   final newDay = result.day + state.interval.ceil();

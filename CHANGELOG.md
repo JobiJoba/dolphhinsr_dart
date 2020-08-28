@@ -1,3 +1,10 @@
+## [2.0.1] - 28/09/2020
+- Added two new field in DRCard LastReviewed and DueDate. It will be null if the card hasn't been show yet (mostly in learning state)  
+- Added method getAllCardStates which return all the card and their combinaison (so if it's double faced you'll  get two time the  same item but with a different front and back but same ID). 
+- Added method cardReviewedTodayLength & cardReviewedAtDateLength to know which the number of cards that has  been  reviewed today  or at  a specific date. 
+- Added cardsLength  method which return the length of the state 
+- Rewrite a bit some methods to be more clear or accurate. 
+
 ## [2.0.0] - 25/09/2020
 BREAKING CHANGE 
 - Change type  of  Master Id from  int to String to support guid and more complex ID.

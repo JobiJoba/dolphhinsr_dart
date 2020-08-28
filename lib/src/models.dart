@@ -47,6 +47,11 @@ class Combination extends Equatable {
   final List<int> back;
 
   @override
+  String toString() {
+    return "Combination($front-$back)";
+  }
+
+  @override
   List<Object> get props => <Object>[front, back];
 }
 
@@ -56,6 +61,11 @@ class Master extends Equatable {
   final String id;
   final List<String> fields;
   final List<Combination> combinations;
+
+  @override
+  String toString() {
+    return "Master($id-$fields-$combinations)";
+  }
 
   @override
   List<Object> get props => <Object>[id];
@@ -76,12 +86,20 @@ class Review extends Equatable {
 }
 
 class DRCard extends Equatable {
-  const DRCard({this.master, this.combination, this.front, this.back});
+  const DRCard(
+      {this.master,
+      this.combination,
+      this.front,
+      this.back,
+      this.lastReviewed,
+      this.dueDate});
 
   final String master;
   final Combination combination;
   final List<String> front;
   final List<String> back;
+  final DateTime lastReviewed;
+  final DateTime dueDate;
 
   @override
   List<Object> get props => <Object>[master, front, back];
@@ -96,6 +114,11 @@ abstract class CardState extends Equatable {
   final String mode;
   final DateTime lastReviewed;
   final double interval;
+
+  @override
+  String toString() {
+    return "CardState($master-$combination-$mode-$lastReviewed-$interval)";
+  }
 
   @override
   List<Object> get props => <Object>[master, lastReviewed];
@@ -162,11 +185,6 @@ abstract class BaseScheduleAndStat extends Equatable {
 
   @override
   List<Object> get props => <Object>[later, due, overdue, learning];
-}
-
-class Schedule extends BaseScheduleAndStat {
-  const Schedule({int later, int due, int overdue, int learning})
-      : super(later, due, overdue, learning);
 }
 
 class SummaryStatics extends BaseScheduleAndStat {
