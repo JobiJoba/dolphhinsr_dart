@@ -187,7 +187,11 @@ CardState applyToReviewingCardState(
 
   final factorAdj = rating == Rating.Hard
       ? -150
-      : rating == Rating.Good ? 0 : rating == Rating.Easy ? 150 : double.nan;
+      : rating == Rating.Good
+          ? 0
+          : rating == Rating.Easy
+              ? 150
+              : double.nan;
 
   final daysLate = calculateDaysLate(prev, ts);
 
@@ -258,6 +262,7 @@ DRState applyReview(DRState prev, Review review) {
   final cardId = CardId.fromReview(review);
 
   final cardState = prev.cardStates[cardId.uniqueId];
+
   if (cardState == null) {
     throw '''applying review to missing card: ${review.master}''';
   }

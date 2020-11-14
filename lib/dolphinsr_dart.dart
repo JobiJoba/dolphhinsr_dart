@@ -33,8 +33,20 @@ class DolphinSR {
     _masters[master.id] = master;
   }
 
-  bool cardExistInMaster(int id) {
+  bool cardExistInMaster(String id) {
     return _masters.containsKey(id);
+  }
+
+  void removeFromMaster(String masterId) {
+    final master = _masters[masterId];
+
+    for (final combination in master.combinations) {
+      final cardId = CardId(combination: combination, master: master.id);
+      _state.cardStates.remove(cardId.uniqueId);
+    }
+    _cachedCardsSchedule = null;
+
+    _masters.remove(masterId);
   }
 
   void addMasters(List<Master> masters) {
@@ -70,9 +82,8 @@ class DolphinSR {
     final master = _masters[cardId.id];
 
     final cardState = _state.cardStates[cardId.uniqueId];
-
     if (master == null) {
-      throw Exception('Master is null; cannot get card');
+      return null;
     }
 
     final frontField =
@@ -138,12 +149,13 @@ class DolphinSR {
   }
 
   int cardReviewedAtDateLength(DateTime date) {
-    return _state.cardStates.values
-        .where((st) =>
-            st.lastReviewed.year == date.year &&
-            st.lastReviewed.month == date.month &&
-            st.lastReviewed.day == date.day)
-        .length;
+    return _state.cardStates.values.where((st) {
+      final dueDate = calculateDueDate(st);
+      return dueDate == null ||
+          dueDate.year == date.year &&
+              dueDate.month == date.month &&
+              dueDate.day == date.day;
+    }).length;
   }
 
   int cardsLength() {
