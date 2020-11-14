@@ -1,3 +1,10 @@
+## [2.0.2] - 14/11/2020
+After an implementation on my side, i've discover some new needs and bugs that I implement and fix. Feel free to submit needs that can be added
+- Added a method to remove from the master (In case your user can remove a flashcard from a deck)
+- Adapt method cardExistInMaster to receive a String instead of Int
+- Correct the method cardReviewedAtDateLength to return the correct date
+- Return null instead of Throw an error in Main when a card does not exist in Master.
+
 ## [2.0.1] - 28/09/2020
 - Added two new field in DRCard LastReviewed and DueDate. It will be null if the card hasn't been show yet (mostly in learning state)  
 - Added method getAllCardStates which return all the card and their combinaison (so if it's double faced you'll  get two time the  same item but with a different front and back but same ID). 
