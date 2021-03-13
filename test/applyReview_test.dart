@@ -29,97 +29,74 @@ final List<Review> reviews = [
 ].map(makeReview).toList();
 
 void main() {
-  test("should add a review to an empty list", () {
+  test('should add a review to an empty list', () {
     DRState state = makeEmptyState();
     String id = generateId();
     Combination combination = Combination(front: [], back: []);
-    Review review = Review(
-        master: id, combination: combination, ts: today, rating: Rating.Easy);
+    Review review = Review(master: id, combination: combination, ts: today, rating: Rating.Easy);
 
-    expect(() => applyReview(state, review), throwsA(startsWith("appl")));
+    expect(() => applyReview(state, review), throwsA(startsWith('appl')));
   });
 
-  test(
-      "should error if adding a review to a state with a lastReviewed later than the review",
-      () {
+  test('should error if adding a review to a state with a lastReviewed later than the review', () {
     DRState state = makeEmptyState();
     String id = generateId();
     Combination combination = Combination(front: [0], back: [1]);
 
     CardId cardId = CardId(master: id, combination: combination);
-    state.cardStates[cardId.uniqueId] =
-        makeInitialCardState(id: id, combination: combination);
+    state.cardStates[cardId.uniqueId] = makeInitialCardState(id: id, combination: combination);
 
-    Review reviewLater = Review(
-        master: id,
-        combination: combination,
-        ts: laterToday,
-        rating: Rating.Easy);
-    Review reviewToday = Review(
-        master: id, combination: combination, ts: today, rating: Rating.Easy);
+    Review reviewLater =
+        Review(master: id, combination: combination, ts: laterToday, rating: Rating.Easy);
+    Review reviewToday =
+        Review(master: id, combination: combination, ts: today, rating: Rating.Easy);
 
     DRState newState = applyReview(state, reviewLater);
 
     applyReview(state, reviewToday);
 
     expect(() => applyReview(newState, reviewToday),
-        throwsA(startsWith("Cannot apply review before current lastReviewed")));
+        throwsA(startsWith('Cannot apply review before current lastReviewed')));
   });
 
   test(
-      "should return a new state reflecting the rating when adding a review to a state with the given master and combination",
+      'should return a new state reflecting the rating when adding a review to a state with the given master and combination',
       () {
     DRState state = makeEmptyState();
     String id = generateId();
     Combination combination = Combination(front: [0], back: [1]);
 
     CardId cardId = CardId(master: id, combination: combination);
-    state.cardStates[cardId.uniqueId] =
-        makeInitialCardState(id: id, combination: combination);
+    state.cardStates[cardId.uniqueId] = makeInitialCardState(id: id, combination: combination);
 
-    Review review = Review(
-        master: id, combination: combination, ts: today, rating: Rating.Good);
+    Review review = Review(master: id, combination: combination, ts: today, rating: Rating.Good);
 
     DRState newState = applyReview(state, review);
     LearningCardState learningCardStateAfterApply = LearningCardState(
-        master: id,
-        combination: combination,
-        consecutiveCorrect: 1,
-        lastReviewed: today);
-    expect(newState.cardStates[cardId.uniqueId],
-        equals(learningCardStateAfterApply));
+        master: id, combination: combination, consecutiveCorrect: 1, lastReviewed: today);
+    expect(newState.cardStates[cardId.uniqueId], equals(learningCardStateAfterApply));
   });
 
-  test(
-      "should accurately navigate through learning, reviewing, and lapsed modes",
-      () {
+  test('should accurately navigate through learning, reviewing, and lapsed modes', () {
     DRState state = makeEmptyState();
     String id = generateId();
     Combination combination = Combination(front: [0], back: [1]);
 
     CardId cardId = CardId(master: id, combination: combination);
-    state.cardStates[cardId.uniqueId] =
-        makeInitialCardState(id: id, combination: combination);
+    state.cardStates[cardId.uniqueId] = makeInitialCardState(id: id, combination: combination);
 
-    Review review = Review(
-        master: id, combination: combination, ts: today, rating: Rating.Good);
+    Review review = Review(master: id, combination: combination, ts: today, rating: Rating.Good);
 
     DRState stateB = applyReview(state, review);
 
     LearningCardState learningCardStateAfterApply = LearningCardState(
-        master: id,
-        combination: combination,
-        consecutiveCorrect: 1,
-        lastReviewed: today);
+        master: id, combination: combination, consecutiveCorrect: 1, lastReviewed: today);
 
     LearningCardState processedCard = stateB.cardStates[cardId.uniqueId];
     expect(processedCard, equals(learningCardStateAfterApply));
 
-    Review reviewC = Review(
-        master: id,
-        combination: combination,
-        ts: laterToday,
-        rating: Rating.Easy);
+    Review reviewC =
+        Review(master: id, combination: combination, ts: laterToday, rating: Rating.Easy);
 
     DRState stateC = applyReview(stateB, reviewC);
 
@@ -141,11 +118,8 @@ void main() {
     datePlusFour = datePlusFour.add(Duration(days: 4));
     expect(stateCDue, equals(datePlusFour));
 
-    Review reviewD = Review(
-        master: id,
-        combination: combination,
-        ts: stateCDue,
-        rating: Rating.Easy);
+    Review reviewD =
+        Review(master: id, combination: combination, ts: stateCDue, rating: Rating.Easy);
     DRState stateD = applyReview(stateC, reviewD);
     ReviewingCardState learningCardStateAfterApplyD = ReviewingCardState(
         master: id,
@@ -155,16 +129,12 @@ void main() {
         factor: 2650,
         interval: 20);
 
-    expect(stateD.cardStates[cardId.uniqueId],
-        equals(learningCardStateAfterApplyD));
+    expect(stateD.cardStates[cardId.uniqueId], equals(learningCardStateAfterApplyD));
 
     DateTime stateDDue = calculateDueDate(stateD.cardStates[cardId.uniqueId]);
 
-    Review reviewE = Review(
-        master: id,
-        combination: combination,
-        ts: stateDDue,
-        rating: Rating.Again);
+    Review reviewE =
+        Review(master: id, combination: combination, ts: stateDDue, rating: Rating.Again);
     DRState stateE = applyReview(stateD, reviewE);
 
     LapsedCardState learningCardStateAfterApplyE = LapsedCardState(
@@ -176,15 +146,11 @@ void main() {
         factor: 2450,
         interval: 20);
 
-    expect(stateE.cardStates[cardId.uniqueId],
-        equals(learningCardStateAfterApplyE));
+    expect(stateE.cardStates[cardId.uniqueId], equals(learningCardStateAfterApplyE));
 
     DateTime reviewDateE = stateDDue.add(Duration(days: 1));
-    Review reviewF = Review(
-        master: id,
-        combination: combination,
-        ts: reviewDateE,
-        rating: Rating.Again);
+    Review reviewF =
+        Review(master: id, combination: combination, ts: reviewDateE, rating: Rating.Again);
     DRState stateF = applyReview(stateE, reviewF);
 
     LapsedCardState learningCardStateAfterApplyF = LapsedCardState(
@@ -195,15 +161,11 @@ void main() {
         lastReviewed: reviewDateE,
         factor: 2450,
         interval: 20);
-    expect(stateF.cardStates[cardId.uniqueId],
-        equals(learningCardStateAfterApplyF));
+    expect(stateF.cardStates[cardId.uniqueId], equals(learningCardStateAfterApplyF));
 
     DateTime reviewDateG = stateDDue.add(Duration(days: 1));
-    Review reviewG = Review(
-        master: id,
-        combination: combination,
-        ts: reviewDateG,
-        rating: Rating.Easy);
+    Review reviewG =
+        Review(master: id, combination: combination, ts: reviewDateG, rating: Rating.Easy);
     DRState stateG = applyReview(stateF, reviewG);
 
     ReviewingCardState learningCardStateAfterApplyG = ReviewingCardState(
@@ -213,7 +175,6 @@ void main() {
         lastReviewed: reviewDateG,
         factor: 2450,
         interval: 1);
-    expect(stateG.cardStates[cardId.uniqueId],
-        equals(learningCardStateAfterApplyG));
+    expect(stateG.cardStates[cardId.uniqueId], equals(learningCardStateAfterApplyG));
   });
 }

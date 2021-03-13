@@ -48,7 +48,7 @@ class Combination extends Equatable {
 
   @override
   String toString() {
-    return "Combination($front-$back)";
+    return 'Combination($front-$back)';
   }
 
   @override
@@ -64,7 +64,7 @@ class Master extends Equatable {
 
   @override
   String toString() {
-    return "Master($id-$fields-$combinations)";
+    return 'Master($id-$fields-$combinations)';
   }
 
   @override
@@ -87,12 +87,7 @@ class Review extends Equatable {
 
 class DRCard extends Equatable {
   const DRCard(
-      {this.master,
-      this.combination,
-      this.front,
-      this.back,
-      this.lastReviewed,
-      this.dueDate});
+      {this.master, this.combination, this.front, this.back, this.lastReviewed, this.dueDate});
 
   final String master;
   final Combination combination;
@@ -106,8 +101,7 @@ class DRCard extends Equatable {
 }
 
 abstract class CardState extends Equatable {
-  const CardState(this.master, this.combination, this.mode, this.lastReviewed,
-      this.interval);
+  const CardState(this.master, this.combination, this.mode, this.lastReviewed, this.interval);
   final String master;
   final Combination combination;
 
@@ -117,7 +111,7 @@ abstract class CardState extends Equatable {
 
   @override
   String toString() {
-    return "CardState($master-$combination-$mode-$lastReviewed-$interval)";
+    return 'CardState($master-$combination-$mode-$lastReviewed-$interval)';
   }
 
   @override
