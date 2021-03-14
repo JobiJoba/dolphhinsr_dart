@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 import 'package:dolphinsr_dart/dolphinsr_dart.dart';
 import 'package:dolphinsr_dart/src/models.dart';
-import "package:test/test.dart";
-import "dates.dart";
+import 'package:test/test.dart';
+import 'dates.dart';
 
 final String master = generateId();
 
@@ -29,65 +29,65 @@ final List<Review> reviews = <DateTime>[
 ].map(makeReview).toList();
 
 void main() {
-  test("should start out empty", () {
-    final DolphinSR d = DolphinSR();
+  test('should start out empty', () {
+    final d = DolphinSR();
     expect(d.nextCard(), isNull);
 
-    SummaryStatics s =
+    var s =
         const SummaryStatics(later: 0, due: 0, overdue: 0, learning: 0);
     expect(d.summary(), equals(s));
   });
 
-  test("should add a new masters to the learning", () {
-    DolphinSR d = DolphinSR();
-    String id = generateId();
-    Master master = Master(id: id, fields: [
+  test('should add a new masters to the learning', () {
+    var d = DolphinSR();
+    var id = generateId();
+    var master = Master(id: id, fields: [
       'Hello',
-      "world"
+      'world'
     ], combinations: [
       Combination(front: [0], back: [1, 0])
     ]);
 
     d.addMasters([master]);
 
-    DRCard nextCard = d.nextCard();
-    DRCard expectedCard = DRCard(
+    var nextCard = d.nextCard();
+    var expectedCard = DRCard(
         master: id,
         combination: Combination(front: [0], back: [1, 0]),
-        front: ["Hello"],
-        back: ["world", "Hello"]);
+        front: ['Hello'],
+        back: ['world', 'Hello']);
     expect(nextCard, equals(expectedCard));
   });
 
-  test("should add multiple new masters to the learning category", () {
-    DolphinSR d = DolphinSR();
-    String id = generateId();
-    Master master = Master(id: id, fields: [
+  test('should add multiple new masters to the learning category', () {
+    var d = DolphinSR();
+    var id = generateId();
+    var master = Master(id: id, fields: [
       'Hello',
-      "world"
+      'world'
     ], combinations: [
       Combination(front: [0], back: [1, 0])
     ]);
-    String id2 = generateId();
+    var id2 = generateId();
 
-    Master master2 = Master(id: id2, fields: [
+    var master2 = Master(id: id2, fields: [
       'Hello',
-      "world"
+      'world'
     ], combinations: [
       Combination(front: [0], back: [1, 0])
     ]);
 
     d.addMasters([master, master2]);
 
-    SummaryStatics s =
+    var s =
         SummaryStatics(later: 0, due: 0, overdue: 0, learning: 2);
     expect(d.summary(), equals(s));
 
-    String id3 = generateId();
+    var id3 = generateId();
 
-    Master master3 = Master(id: id3, fields: [
+    var master3 = Master(id: id3, fields: [
       'Hello',
-      "world"
+      'world'
     ], combinations: [
       Combination(front: [0], back: [1, 0])
     ]);
@@ -97,34 +97,34 @@ void main() {
     expect(d.summary(), equals(s));
   });
 
-  test("should add reviews", () {
-    DolphinSR d = DolphinSR(currentDateGetter: today);
-    String id = generateId();
-    Combination combination = Combination(front: [0], back: [1, 0]);
-    Master master =
-        Master(id: id, fields: ['Hello', "world"], combinations: [combination]);
+  test('should add reviews', () {
+    var d = DolphinSR(currentDateGetter: today);
+    var id = generateId();
+    var combination = Combination(front: [0], back: [1, 0]);
+    var master =
+        Master(id: id, fields: ['Hello', 'world'], combinations: [combination]);
 
     d.addMasters([master]);
 
-    DRCard nextCard = d.nextCard();
-    DRCard expectedCard = DRCard(
+    var nextCard = d.nextCard();
+    var expectedCard = DRCard(
         master: id,
         combination: Combination(front: [0], back: [1, 0]),
-        front: ["Hello"],
-        back: ["world", "Hello"]);
+        front: ['Hello'],
+        back: ['world', 'Hello']);
     expect(nextCard, equals(expectedCard));
     expect(d.summary().learning, equals(1));
 
-    Review review = Review(
+    var review = Review(
         master: id, combination: combination, ts: today, rating: Rating.Easy);
     d.addReviews([review]);
 
     expect(d.summary().later, equals(1));
     expect(d.nextCard(), isNull);
 
-    Master secondMaster = Master(
+    var secondMaster = Master(
         id: generateId(),
-        fields: ['Hello', "world"],
+        fields: ['Hello', 'world'],
         combinations: [combination]);
     d.addMasters([secondMaster]);
     expect(d.summary().learning, equals(1));
@@ -132,7 +132,7 @@ void main() {
     d.addReviews([
       Review(
           master: secondMaster.id,
-          combination: secondMaster.combinations[0],
+          combination: secondMaster.combinations![0],
           ts: today,
           rating: Rating.Easy)
     ]);

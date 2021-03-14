@@ -28,7 +28,7 @@ void main() {
 
   printStats(stats);
 
-  var card = dolphin.nextCard();
+  var card = dolphin.nextCard()!;
   printCard(card);
   var review = Review(
       master: card.master,
@@ -37,7 +37,7 @@ void main() {
       rating: Rating.Hard);
   dolphin.addReviews(<Review>[review]);
 
-  card = dolphin.nextCard();
+  card = dolphin.nextCard()!;
   printCard(card);
 
   review = Review(
@@ -51,7 +51,7 @@ void main() {
       dolphin.summary(); // => { due: 0, later: 0, learning: 10, overdue: 0 }
   printStats(stats);
 
-  card = dolphin.nextCard();
+  card = dolphin.nextCard()!;
   printCard(card);
   review = Review(
       master: card.master,
@@ -64,7 +64,7 @@ void main() {
       dolphin.summary(); // => { due: 0, later: 0, learning: 10, overdue: 0 }
   printStats(stats);
 
-  card = dolphin.nextCard();
+  card = dolphin.nextCard()!;
   printCard(card);
   review = Review(
       master: card.master,
@@ -77,7 +77,7 @@ void main() {
       dolphin.summary(); // => { due: 0, later: 0, learning: 10, overdue: 0 }
   printStats(stats);
 
-  card = dolphin.nextCard();
+  card = dolphin.nextCard()!;
   printCard(card);
   review = Review(
       master: card.master,
@@ -90,7 +90,7 @@ void main() {
       dolphin.summary(); // => { due: 0, later: 0, learning: 10, overdue: 0 }
   printStats(stats);
 
-  card = dolphin.nextCard();
+  card = dolphin.nextCard()!;
   printCard(card);
   review = Review(
       master: card.master,
@@ -103,7 +103,7 @@ void main() {
       dolphin.summary(); // => { due: 0, later: 0, learning: 10, overdue: 0 }
   printStats(stats);
 
-  card = dolphin.nextCard();
+  card = dolphin.nextCard()!;
   printCard(card);
   review = Review(
       master: card.master,
@@ -116,7 +116,7 @@ void main() {
       dolphin.summary(); // => { due: 0, later: 0, learning: 10, overdue: 0 }
   printStats(stats);
 
-  card = dolphin.nextCard();
+  card = dolphin.nextCard()!;
   printCard(card);
   review = Review(
       master: card.master,
@@ -129,7 +129,7 @@ void main() {
       dolphin.summary(); // => { due: 0, later: 0, learning: 10, overdue: 0 }
   printStats(stats);
 
-  card = dolphin.nextCard();
+  card = dolphin.nextCard()!;
   printCard(card);
   review = Review(
       master: card.master,
@@ -145,7 +145,7 @@ void main() {
 
 void printCard(DRCard card) {
   print(
-      '${card.master}-${card.back}-${card.front}-${card.combination.back}-${card.combination.front} - ${card.lastReviewed} - ${card.dueDate}');
+      '${card.master}-${card.back}-${card.front}-${card.combination!.back}-${card.combination!.front} - ${card.lastReviewed} - ${card.dueDate}');
 }
 
 void printStats(stats) {

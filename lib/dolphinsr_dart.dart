@@ -7,14 +7,14 @@ export './src/models.dart';
 class DolphinSR {
   DolphinSR({this.currentDateGetter}) {
     _state = makeEmptyState();
-    _masters = <String, Master>{};
+    _masters = <String?, Master>{};
     currentDateGetter ??= DateTime.now();
   }
 
-  DRState _state;
-  Map<String, Master> _masters;
-  CardsSchedule _cachedCardsSchedule;
-  DateTime currentDateGetter;
+  DRState? _state;
+  late Map<String?, Master> _masters;
+  CardsSchedule? _cachedCardsSchedule;
+  DateTime? currentDateGetter;
 
   void _addMaster(Master master) {
     if (_masters.isNotEmpty) {
@@ -23,10 +23,10 @@ class DolphinSR {
       }
     }
 
-    for (final combination in master.combinations) {
+    for (final combination in master.combinations!) {
       final cardId = CardId(combination: combination, master: master.id);
 
-      _state.cardStates[cardId.uniqueId] =
+      _state!.cardStates[cardId.uniqueId] =
           makeInitialCardState(id: master.id, combination: combination);
     }
 
@@ -38,11 +38,11 @@ class DolphinSR {
   }
 
   void removeFromMaster(String masterId) {
-    final master = _masters[masterId];
+    final master = _masters[masterId]!;
 
-    for (final combination in master.combinations) {
+    for (final combination in master.combinations!) {
       final cardId = CardId(combination: combination, master: master.id);
-      _state.cardStates.remove(cardId.uniqueId);
+      _state!.cardStates.remove(cardId.uniqueId);
     }
     _cachedCardsSchedule = null;
 
@@ -59,37 +59,37 @@ class DolphinSR {
 
   void addReviews(List<Review> reviews) {
     for (final review in reviews) {
-      _state = applyReview(_state, review);
+      _state = applyReview(_state!, review);
     }
     _cachedCardsSchedule = null;
   }
 
-  CardsSchedule _getCardsSchedule() {
+  CardsSchedule? _getCardsSchedule() {
     if (_cachedCardsSchedule != null) {
       return _cachedCardsSchedule;
     }
 
-    _cachedCardsSchedule = computeCardsSchedule(_state, currentDateGetter);
+    _cachedCardsSchedule = computeCardsSchedule(_state!, currentDateGetter);
     return _cachedCardsSchedule;
   }
 
-  CardId _nextCardId() {
+  CardId? _nextCardId() {
     final cardSchedule = _getCardsSchedule();
     return pickMostDue(cardSchedule, _state);
   }
 
-  DRCard _getCard(CardId cardId) {
+  DRCard? _getCard(CardId cardId) {
     final master = _masters[cardId.id];
 
-    final cardState = _state.cardStates[cardId.uniqueId];
+    final cardState = _state!.cardStates[cardId.uniqueId];
     if (master == null) {
       return null;
     }
 
     final frontField =
-        cardState.combination.front.map((int i) => master.fields[i]).toList();
+        cardState!.combination!.front!.map((int i) => master.fields![i]).toList();
     final backFields =
-        cardState.combination.back.map((int i) => master.fields[i]).toList();
+        cardState.combination!.back!.map((int i) => master.fields![i]).toList();
 
     final dueDate = calculateDueDate(cardState);
     final card = DRCard(
@@ -104,12 +104,12 @@ class DolphinSR {
   }
 
   List<DRCard> getAllCardState() {
-    return _state.cardStates.values.map((cardState) {
-      final frontField = cardState.combination.front
-          .map((int i) => _masters[cardState.master].fields[i])
+    return _state!.cardStates.values.map((cardState) {
+      final frontField = cardState!.combination!.front!
+          .map((int i) => _masters[cardState.master]!.fields![i])
           .toList();
-      final backFields = cardState.combination.back
-          .map((int i) => _masters[cardState.master].fields[i])
+      final backFields = cardState.combination!.back!
+          .map((int i) => _masters[cardState.master]!.fields![i])
           .toList();
 
       final dueDate = calculateDueDate(cardState);
@@ -125,7 +125,7 @@ class DolphinSR {
     }).toList();
   }
 
-  DRCard nextCard() {
+  DRCard? nextCard() {
     final nextCardId = _nextCardId();
     if (nextCardId == null) {
       return null;
@@ -134,12 +134,12 @@ class DolphinSR {
   }
 
   SummaryStatics summary() {
-    final s = _getCardsSchedule();
+    final s = _getCardsSchedule()!;
     final summary = SummaryStatics(
-        later: s.later.length,
-        due: s.due.length,
-        overdue: s.overdue.length,
-        learning: s.learning.length);
+        later: s.later!.length,
+        due: s.due!.length,
+        overdue: s.overdue!.length,
+        learning: s.learning!.length);
 
     return summary;
   }
@@ -149,8 +149,8 @@ class DolphinSR {
   }
 
   int cardReviewedAtDateLength(DateTime date) {
-    return _state.cardStates.values.where((st) {
-      final dueDate = calculateDueDate(st);
+    return _state!.cardStates.values.where((st) {
+      final dueDate = calculateDueDate(st!);
       return dueDate == null ||
           dueDate.year == date.year &&
               dueDate.month == date.month &&
@@ -159,6 +159,6 @@ class DolphinSR {
   }
 
   int cardsLength() {
-    return _state.cardStates.length;
+    return _state!.cardStates.length;
   }
 }
