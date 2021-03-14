@@ -46,7 +46,7 @@ void main() {
     var id = generateId();
     var combination = Combination(front: [0], back: [1]);
 
-    var cardId = CardId(master: id, combination: combination);
+    var cardId = CardId.fromCombination(master: id, combination: combination);
     state.cardStates[cardId.uniqueId] =
         makeInitialCardState(id: id, combination: combination);
 
@@ -73,7 +73,7 @@ void main() {
     var id = generateId();
     var combination = Combination(front: [0], back: [1]);
 
-    var cardId = CardId(master: id, combination: combination);
+    var cardId = CardId.fromCombination(master: id, combination: combination);
     state.cardStates[cardId.uniqueId] =
         makeInitialCardState(id: id, combination: combination);
 
@@ -97,7 +97,7 @@ void main() {
     var id = generateId();
     var combination = Combination(front: [0], back: [1]);
 
-    var cardId = CardId(master: id, combination: combination);
+    var cardId = CardId.fromCombination(master: id, combination: combination);
     state.cardStates[cardId.uniqueId] =
         makeInitialCardState(id: id, combination: combination);
 
@@ -112,7 +112,8 @@ void main() {
         consecutiveCorrect: 1,
         lastReviewed: today);
 
-    var processedCard = stateB.cardStates[cardId.uniqueId] as LearningCardState?;
+    var processedCard =
+        stateB.cardStates[cardId.uniqueId] as LearningCardState?;
     expect(processedCard, equals(learningCardStateAfterApply));
 
     var reviewC = Review(
@@ -123,7 +124,8 @@ void main() {
 
     var stateC = applyReview(stateB, reviewC);
 
-    var processedCardC = stateC.cardStates[cardId.uniqueId] as ReviewingCardState?;
+    var processedCardC =
+        stateC.cardStates[cardId.uniqueId] as ReviewingCardState?;
 
     var learningCardStateAfterApplyC = ReviewingCardState(
         master: id,

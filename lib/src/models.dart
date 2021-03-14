@@ -1,35 +1,50 @@
 import 'package:equatable/equatable.dart';
 
 class CardId extends Equatable {
-  CardId({String? master, required Combination combination}) {
-    id = master;
-    frontJoin = combination.front!.join(',');
-    backJoin = combination.back!.join(',');
-    uniqueId = '$id#$frontJoin@$backJoin';
+  CardId({this.id, this.frontJoin, this.backJoin, this.time, this.uniqueId});
+
+  factory CardId.fromCombination(
+      {String? master, required Combination combination}) {
+    final id = master;
+    final frontJoin = combination.front!.join(',');
+    final backJoin = combination.back!.join(',');
+    return CardId(
+        id: id,
+        frontJoin: frontJoin,
+        backJoin: backJoin,
+        time: null,
+        uniqueId: '$id#$frontJoin@$backJoin');
   }
 
-  CardId.fromState(CardState state) {
-    id = state.master;
-    frontJoin = state.combination!.front!.join(',');
-    backJoin = state.combination!.back!.join(',');
-    time = state.lastReviewed;
-
-    uniqueId = '$id#$frontJoin@$backJoin';
+  factory CardId.fromState(CardState state) {
+    final id = state.master;
+    final frontJoin = state.combination!.front!.join(',');
+    final backJoin = state.combination!.back!.join(',');
+    return CardId(
+        id: id,
+        frontJoin: frontJoin,
+        backJoin: backJoin,
+        time: state.lastReviewed,
+        uniqueId: '$id#$frontJoin@$backJoin');
   }
 
-  CardId.fromReview(Review review) {
-    id = review.master;
-    frontJoin = review.combination!.front!.join(',');
-    backJoin = review.combination!.back!.join(',');
-    time = review.ts;
-    uniqueId = '$id#$frontJoin@$backJoin';
+  factory CardId.fromReview(Review review) {
+    final id = review.master;
+    final frontJoin = review.combination!.front!.join(',');
+    final backJoin = review.combination!.back!.join(',');
+    return CardId(
+        id: id,
+        frontJoin: frontJoin,
+        backJoin: backJoin,
+        time: review.ts,
+        uniqueId: '$id#$frontJoin@$backJoin');
   }
 
-  String? id;
-  String? frontJoin;
-  String? backJoin;
-  DateTime? time;
-  String? uniqueId;
+  final String? id;
+  final String? frontJoin;
+  final String? backJoin;
+  final DateTime? time;
+  final String? uniqueId;
 
   @override
   String toString() {

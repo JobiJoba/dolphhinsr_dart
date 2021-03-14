@@ -178,8 +178,8 @@ CardState applyToReviewingCardState(
         master: prev.master,
         combination: prev.combination,
         consecutiveCorrect: 0,
-        factor: constrainWithin(
-            MIN_FACTOR.toDouble(), MAX_FACTOR, prev.factor!.toDouble() - 200) as double?,
+        factor: constrainWithin(MIN_FACTOR.toDouble(), MAX_FACTOR,
+            prev.factor!.toDouble() - 200) as double?,
         lapses: prev.lapses! + 1,
         interval: prev.interval,
         lastReviewed: ts);
@@ -200,7 +200,8 @@ CardState applyToReviewingCardState(
       : rating == Rating.Good
           ? ((prev.interval! + (daysLate / 2)) * prev.factor!) / 1000
           : rating == Rating.Easy
-              ? (((prev.interval! + daysLate) * prev.factor!) / 1000) * EASY_BONUS
+              ? (((prev.interval! + daysLate) * prev.factor!) / 1000) *
+                  EASY_BONUS
               : double.nan;
   final ival = constrainWithin(prev.interval! + 1, MAX_INTERVAL, fact);
 
@@ -208,7 +209,8 @@ CardState applyToReviewingCardState(
       master: prev.master,
       combination: prev.combination,
       factor: constrainWithin(
-          MIN_FACTOR.toDouble(), MAX_FACTOR, prev.factor! + factorAdj) as double?,
+              MIN_FACTOR.toDouble(), MAX_FACTOR, prev.factor! + factorAdj)
+          as double?,
       lapses: prev.lapses,
       interval: ival as double?,
       lastReviewed: ts);

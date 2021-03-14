@@ -24,7 +24,8 @@ class DolphinSR {
     }
 
     for (final combination in master.combinations!) {
-      final cardId = CardId(combination: combination, master: master.id);
+      final cardId =
+          CardId.fromCombination(combination: combination, master: master.id);
 
       _state!.cardStates[cardId.uniqueId] =
           makeInitialCardState(id: master.id, combination: combination);
@@ -41,7 +42,8 @@ class DolphinSR {
     final master = _masters[masterId]!;
 
     for (final combination in master.combinations!) {
-      final cardId = CardId(combination: combination, master: master.id);
+      final cardId =
+          CardId.fromCombination(combination: combination, master: master.id);
       _state!.cardStates.remove(cardId.uniqueId);
     }
     _cachedCardsSchedule = null;
@@ -86,8 +88,9 @@ class DolphinSR {
       return null;
     }
 
-    final frontField =
-        cardState!.combination!.front!.map((int i) => master.fields![i]).toList();
+    final frontField = cardState!.combination!.front!
+        .map((int i) => master.fields![i])
+        .toList();
     final backFields =
         cardState.combination!.back!.map((int i) => master.fields![i]).toList();
 

@@ -1,3 +1,10 @@
+## [3.0.1] - 14/03/2021
+Fix issue #7
+Update readme
+
+## [3.0.0] - 14/03/2021
+Use the dart migrate tool to migrate to null safety; test pass but I didn't test in production yet
+
 ## [2.0.2] - 14/11/2020
 After an implementation on my side, i've discover some new needs and bugs that I implement and fix. Feel free to submit needs that can be added
 - Added a method to remove from the master (In case your user can remove a flashcard from a deck)
