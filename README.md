@@ -1,5 +1,10 @@
 [![Build Status](https://travis-ci.org/JobiJoba/dolphhinsr_dart.svg?branch=master)](https://travis-ci.org/JobiJoba/dolphhinsr_dart#)
 
+--- 
+
+Attention, I'm not maintaining actively this module, PR are welcome. 
+
+---
 
 # DolphinSR_Dart
 
