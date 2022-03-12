@@ -58,11 +58,11 @@ void main() {
     var reviewToday = Review(
         master: id, combination: combination, ts: today, rating: Rating.Easy);
 
-    var newState = applyReview(state, reviewLater);
+    applyReview(state, reviewLater);
 
     applyReview(state, reviewToday);
 
-    expect(() => applyReview(newState, reviewToday),
+    expect(() => applyReview(state, reviewToday),
         throwsA(startsWith('Cannot apply review before current lastReviewed')));
   });
 
@@ -80,13 +80,13 @@ void main() {
     var review = Review(
         master: id, combination: combination, ts: today, rating: Rating.Good);
 
-    var newState = applyReview(state, review);
+    applyReview(state, review);
     var learningCardStateAfterApply = LearningCardState(
         master: id,
         combination: combination,
         consecutiveCorrect: 1,
         lastReviewed: today);
-    expect(newState.cardStates[cardId.uniqueId],
+    expect(state.cardStates[cardId.uniqueId],
         equals(learningCardStateAfterApply));
   });
 
@@ -104,7 +104,7 @@ void main() {
     var review = Review(
         master: id, combination: combination, ts: today, rating: Rating.Good);
 
-    var stateB = applyReview(state, review);
+    applyReview(state, review);
 
     var learningCardStateAfterApply = LearningCardState(
         master: id,
@@ -113,7 +113,7 @@ void main() {
         lastReviewed: today);
 
     var processedCard =
-        stateB.cardStates[cardId.uniqueId] as LearningCardState?;
+        state.cardStates[cardId.uniqueId] as LearningCardState?;
     expect(processedCard, equals(learningCardStateAfterApply));
 
     var reviewC = Review(
@@ -122,10 +122,10 @@ void main() {
         ts: laterToday,
         rating: Rating.Easy);
 
-    var stateC = applyReview(stateB, reviewC);
+    applyReview(state, reviewC);
 
     var processedCardC =
-        stateC.cardStates[cardId.uniqueId] as ReviewingCardState?;
+        state.cardStates[cardId.uniqueId] as ReviewingCardState?;
 
     var learningCardStateAfterApplyC = ReviewingCardState(
         master: id,
@@ -137,7 +137,7 @@ void main() {
 
     expect(processedCardC, equals(learningCardStateAfterApplyC));
 
-    var stateCDue = calculateDueDate(stateC.cardStates[cardId.uniqueId]!);
+    var stateCDue = calculateDueDate(state.cardStates[cardId.uniqueId]!);
 
     var datePlusFour = todayAt3AM;
     datePlusFour = datePlusFour.add(Duration(days: 4));
@@ -148,7 +148,7 @@ void main() {
         combination: combination,
         ts: stateCDue,
         rating: Rating.Easy);
-    var stateD = applyReview(stateC, reviewD);
+    applyReview(state, reviewD);
     var learningCardStateAfterApplyD = ReviewingCardState(
         master: id,
         combination: combination,
@@ -157,17 +157,17 @@ void main() {
         factor: 2650,
         interval: 20);
 
-    expect(stateD.cardStates[cardId.uniqueId],
+    expect(state.cardStates[cardId.uniqueId],
         equals(learningCardStateAfterApplyD));
 
-    var stateDDue = calculateDueDate(stateD.cardStates[cardId.uniqueId]!)!;
+    var stateDDue = calculateDueDate(state.cardStates[cardId.uniqueId]!)!;
 
     var reviewE = Review(
         master: id,
         combination: combination,
         ts: stateDDue,
         rating: Rating.Again);
-    var stateE = applyReview(stateD, reviewE);
+    applyReview(state, reviewE);
 
     var learningCardStateAfterApplyE = LapsedCardState(
         master: id,
@@ -178,7 +178,7 @@ void main() {
         factor: 2450,
         interval: 20);
 
-    expect(stateE.cardStates[cardId.uniqueId],
+    expect(state.cardStates[cardId.uniqueId],
         equals(learningCardStateAfterApplyE));
 
     var reviewDateE = stateDDue.add(Duration(days: 1));
@@ -187,7 +187,7 @@ void main() {
         combination: combination,
         ts: reviewDateE,
         rating: Rating.Again);
-    var stateF = applyReview(stateE, reviewF);
+    applyReview(state, reviewF);
 
     var learningCardStateAfterApplyF = LapsedCardState(
         master: id,
@@ -197,7 +197,7 @@ void main() {
         lastReviewed: reviewDateE,
         factor: 2450,
         interval: 20);
-    expect(stateF.cardStates[cardId.uniqueId],
+    expect(state.cardStates[cardId.uniqueId],
         equals(learningCardStateAfterApplyF));
 
     var reviewDateG = stateDDue.add(Duration(days: 1));
@@ -206,7 +206,7 @@ void main() {
         combination: combination,
         ts: reviewDateG,
         rating: Rating.Easy);
-    var stateG = applyReview(stateF, reviewG);
+    applyReview(state, reviewG);
 
     var learningCardStateAfterApplyG = ReviewingCardState(
         master: id,
@@ -215,7 +215,7 @@ void main() {
         lastReviewed: reviewDateG,
         factor: 2450,
         interval: 1);
-    expect(stateG.cardStates[cardId.uniqueId],
+    expect(state.cardStates[cardId.uniqueId],
         equals(learningCardStateAfterApplyG));
   });
 }

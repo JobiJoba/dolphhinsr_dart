@@ -61,7 +61,7 @@ class DolphinSR {
 
   void addReviews(List<Review> reviews) {
     for (final review in reviews) {
-      _state = applyReview(_state!, review);
+      applyReview(_state!, review);
     }
     _cachedCardsSchedule = null;
   }

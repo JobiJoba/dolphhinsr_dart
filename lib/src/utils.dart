@@ -260,20 +260,17 @@ CardState? applyToCardState(CardState prev, DateTime? ts, Rating? rating) {
   throw Exception('Card mode is incorrect');
 }
 
-DRState applyReview(DRState prev, Review review) {
+void applyReview(DRState state, Review review) {
   final cardId = CardId.fromReview(review);
 
-  final cardState = prev.cardStates[cardId.uniqueId];
+  final cardState = state.cardStates[cardId.uniqueId];
 
   if (cardState == null) {
     throw '''applying review to missing card: ${review.master}''';
   }
-  final newState = DRState(Map<String, CardState>.from(prev.cardStates));
 
-  newState.cardStates[cardId.uniqueId] =
+  state.cardStates[cardId.uniqueId] =
       applyToCardState(cardState, review.ts, review.rating);
-
-  return newState;
 }
 
 String getCardIdFromCardState(CardState cardState) {
